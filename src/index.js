@@ -1,9 +1,12 @@
 const path = require('path');
 const express = require('express')
 const morgan = require('morgan')
-const exphbs = require('express-handlebars')
+const exphbs = require('express-handlebars');
+const { dirname } = require('path');
 const app = express()
 const port = 3000
+
+app.use(express.static(path.join(__dirname,'public')))
 
 // HTTP log
 app.use(morgan('combined'))
