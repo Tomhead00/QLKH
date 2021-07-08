@@ -14,7 +14,7 @@ app.use(express.urlencoded({
 app.use(express.json())
 
 // HTTP log
-// app.use(morgan('combined'))
+app.use(morgan('combined'))
 // Template engine
 app.engine('hbs', exphbs({
   extname: '.hbs'
