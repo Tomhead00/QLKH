@@ -24,12 +24,7 @@
   },
   "homepage": "https://github.com/Tomhead00/learn-nodejs#readme",
   "lint-staged": {
-    "src/**/*.{js,json,scss}": "prettier --single-quote --tab-width 4 --trailing-comma all --write src/**/*.{js,json,scss}"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "src/**/*.{js,json,scss}": "prettier --single-quote --tab-width 4 --trailing-comma all --write 'src/**/*.{js,json,scss}'"
   },
   "dependencies": {
     "express": "^4.17.1"
