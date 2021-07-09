@@ -8,8 +8,6 @@ class SitesController {
     search(req, res) {
         res.render('search');
     }
-
-
 }
 
-module.exports = new SitesController;
+module.exports = new SitesController();
