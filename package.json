@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon --inspect src/index.js",
     "watch": "node-sass -w src/resources/scss/ -o src/public/css/",
-    "check": "lint-staged"
+    "check": "lint-staged",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
