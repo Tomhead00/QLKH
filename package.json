@@ -28,7 +28,8 @@
     "src/**/*.{js,json,scss}": "prettier --single-quote --tab-width 4 --allow-empty --trailing-comma all --write 'src/**/*.{js,json,scss}'"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.13.5"
   },
   "devDependencies": {
     "express-handlebars": "^5.3.2",
