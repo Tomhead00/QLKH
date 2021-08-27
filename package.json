@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tomhead00/learn-nodejs.git"
+    "url": "git+https://github.com/Tomhead00/QLKH.git"
   },
   "keywords": [
     "tomhead",
@@ -21,9 +21,9 @@
   "author": "tomhead",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Tomhead00/learn-nodejs/issues"
+    "url": "https://github.com/Tomhead00/QLKH/issues"
   },
-  "homepage": "https://github.com/Tomhead00/learn-nodejs#readme",
+  "homepage": "https://github.com/Tomhead00/QLKH#readme",
   "lint-staged": {
     "src/**/*.{js,json,scss}": "prettier --single-quote --tab-width 4 --allow-empty --trailing-comma all --write 'src/**/*.{js,json,scss}'"
   },
@@ -32,6 +32,7 @@
     "method-override": "^3.0.0",
     "mongoose": "^5.13.5",
     "mongoose-delete": "^0.5.3",
+    "mongoose-sequence": "^5.3.1",
     "mongoose-slug-generator": "^1.0.4"
   },
   "devDependencies": {
