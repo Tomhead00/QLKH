@@ -28,6 +28,7 @@
     "src/**/*.{js,json,scss}": "prettier --single-quote --tab-width 4 --allow-empty --trailing-comma all --write 'src/**/*.{js,json,scss}'"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.1",
     "method-override": "^3.0.0",
     "mongoose": "^5.13.5",

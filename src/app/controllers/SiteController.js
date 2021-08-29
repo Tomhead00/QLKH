@@ -6,7 +6,7 @@ class SitesController {
     home(req, res, next) {
         Course.find({})
             .then((courses) => {
-                res.render('home', {
+                res.render('courses/courses', {
                     courses: multipleMongooseToObject(courses),
                 });
             })
