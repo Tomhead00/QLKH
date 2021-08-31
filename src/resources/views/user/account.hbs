@@ -1,5 +1,5 @@
 <div id="logreg-forms">
-    <form class="form-signin">
+    <form class="form-signin" method="POST" action="/account/login">
         <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Đăng nhập</h1>
         <div class="social-login">
             <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Đăng nhập với Facebook</span> </button>
@@ -7,13 +7,13 @@
         </div>
         <p style="text-align:center"> Hoặc  </p>
         <div class="input-group">
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+            <input type="email" id="inputEmail" class="form-control" name="email" placeholder="Email address" required="" autofocus="" value="{{email}}">
         </div>
 
         <div class="input-group">
-            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+            <input type="password" id="inputPassword" class="form-control" name="password" placeholder="Password" required="">
         </div>
-        <p id="alert-login" style="display: none"></p>
+        <p id="alert-login" style="display: block; color: red; text-align: center">{{alert}}</p>
 
         <div class="input-group">
             <button class="btn btn-md btn-rounded btn-block form-control submit" type="submit"><i class="fas fa-sign-in-alt"></i> Đăng nhập</button>
@@ -28,7 +28,7 @@
     <form action="#" class="form-reset">
         <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="">
         <button class="btn btn-primary btn-block" type="submit">Khôi phục mật khẩu</button>
-        <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i> Back</a>
+        <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i> Quay lại</a>
     </form>
 
     <form method="POST" action="./account/create" class="form-signup">
@@ -73,7 +73,6 @@
         var emailInput = $("#inputEmail");
         var passwordInput = $("#inputPassword");
 
-
         function toggleResetPswd(e){
             e.preventDefault();
             $('#logreg-forms .form-signin').toggle() // display:block or none
@@ -107,7 +106,7 @@
         // Check username
         username.keyup(function checkusername() {
             $.ajax({
-                url: './account/check_username',
+                url: '/account/check_username',
                 type: 'POST',
                 data: {
                     username: username.val()
@@ -125,7 +124,7 @@
         // Check email
         email.keyup(function checkemail() {
             $.ajax({
-                url: './account/check_email',
+                url: '/account/check_email',
                 type: 'POST',
                 data: {
                     email: email.val()
@@ -145,30 +144,17 @@
         //submit create account
         $('.btn.btn-md.btn-block.submit').click(function(e) {
             var check = $('.form-signup').find("input[style='border-color: red']").length;
-            console.log(check);
+            // console.log(check);
             if(check > 0) {
                 e.preventDefault();
             }
         })
 
-        // Login
-        login.click(function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: './account/login',
-                type: 'POST',
-                data: {
-                    email: emailInput.val(),
-                    password: passwordInput.val(),
-                }
-            }).done(function(ketqua) {
-                if (ketqua != "Đăng nhập thành công!") {
-                    alert_login.html(ketqua);
-                    alert_login.attr('style', 'display: block; color: red; text-align: center');
-                } else {
-                    window.location.href = "./";
-                }
-            });
-        });
+        //login
+        // console.log(emailInput.val().length);
+        if(emailInput.val().length > 1) {
+            passwordInput.attr('style','border-color: red');
+            passwordInput.focus();
+        }
     })
 </script>

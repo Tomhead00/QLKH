@@ -1,13 +1,29 @@
 const Course = require('../models/Course');
 const { mongooseToObject } = require('../../util/mongoose');
+const { multipleMongooseToObject } = require('../../util/mongoose');
 
 class CourseController {
+    // GET /course
+    course(req, res, next) {
+        Course.find({})
+            .then((courses) => {
+                res.render('courses/courses', {
+                    courses: multipleMongooseToObject(courses),
+                    username: req.session.username,
+                    image: req.session.image,
+                });
+            })
+            .catch(next);
+    }
+
     // GET /courses/:slug
     show(req, res, next) {
         Course.findOne({ slug: req.params.slug })
             .then((course) => {
                 res.render('courses/show', {
                     course: mongooseToObject(course),
+                    username: req.session.username,
+                    image: req.session.image,
                 });
             })
             .catch(next);
@@ -16,7 +32,10 @@ class CourseController {
 
     // GET /courses/create
     create(req, res, next) {
-        res.render('courses/create');
+        res.render('courses/create', {
+            username: req.session.username,
+            image: req.session.image,
+        });
     }
 
     // POST /courses/store

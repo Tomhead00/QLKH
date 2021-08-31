@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-      <a class="navbar-brand" href="/">QLKH</a>
+      <a class="navbar-brand" href="/"><b>QLKH</b></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -8,27 +8,65 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="./">Trang chủ<span class="sr-only">(current)</span></a>
+          <a class="nav-link ml-4" href="/"><b>Trang chủ</b></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link ml-4" href="/courses"><b>Khóa học</b></a>
         </li>
       </ul>
       <ul class="navbar-nav ml-auto">
+        {{#if username}}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Bruh
-          </a>
+            <img src="{{image}}" alt="" class="user-avatar">
+            <b>{{username}}</b>
+            </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="/courses/create">Đăng khóa học</a>
+              <a class="dropdown-item" href="/courses/create">Đăng khóa học</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>
+              <a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Đăng xuất</a>
+              <a class="dropdown-item" data-toggle="modal" data-target="#exampleModal">Đăng xuất</a>
           </div>
         </li>
+        {{else}}
+          <a class="nav-link ml-4" href="/account"><b>Đăng nhập</b></a>
+        {{/if}}
       </ul>
-
     </div>
   </div>
 </nav>
+
+
+<!-- Modal Logout-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Đăng xuất</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc muốn đăng xuất?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" id="btn-logout" >Xác nhận</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form method="POST" id="form-submit" action="/account/logout"></form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var form_submit = $("#form-submit");
+
+      $("#btn-logout").click(function() {
+          form_submit.submit();
+      })
+    });
+</script>

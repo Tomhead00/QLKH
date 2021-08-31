@@ -9,6 +9,7 @@ function route(app) {
     app.use('/courses', coursesRouter);
 
     app.use('/', siteRouter);
+    app.use('/:slug', siteRouter);
 }
 
 module.exports = route;

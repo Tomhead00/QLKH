@@ -11,6 +11,9 @@ const port = 3000;
 const SortMiddleware = require('./app/middlewares/SortMiddleware');
 const route = require('./routes');
 const db = require('./config/db');
+const session = require('express-session');
+const CheckUser = require('./app/middlewares/CheckUser');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 // connect to DB
 db.connect();
@@ -27,8 +30,25 @@ app.use(express.json());
 
 app.use(methodOverride('_method'));
 
+// connect mongodb session
+const store = new MongoDBStore({
+    uri: 'mongodb://localhost:27017/QLKH',
+    collection: 'mySessions',
+});
+
+// cookie session
+app.use(
+    session({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: false,
+        store: store,
+    }),
+);
+
 // Custom middleware
 app.use(SortMiddleware);
+app.get('/', CheckUser);
 
 // HTTP log
 // app.use(morgan('combined'));

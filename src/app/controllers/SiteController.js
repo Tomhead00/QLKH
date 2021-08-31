@@ -3,19 +3,12 @@ const { multipleMongooseToObject } = require('../../util/mongoose');
 
 class SitesController {
     // GET /home
-    home(req, res, next) {
-        Course.find({})
-            .then((courses) => {
-                res.render('courses/courses', {
-                    courses: multipleMongooseToObject(courses),
-                });
-            })
-            .catch(next);
-    }
-
-    // GET search
-    search(req, res) {
-        res.render('search');
+    home(req, res) {
+        res.render('home', {
+            layout: false,
+            username: req.session.username,
+            image: req.session.image,
+        });
     }
 }
 
