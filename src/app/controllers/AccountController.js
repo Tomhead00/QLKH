@@ -46,35 +46,33 @@ class AccountController {
         }
     }
 
-    // POST /Account/login
-    async login(req, res) {
-        if (req.body.email == 'null' && req.body.password == 'null') {
-            res.redirect('/account');
-        } else {
-            const { email, password } = req.body;
-            const user = await User.findOne({ email });
+    // // POST /Account/login
+    // async login(req, res) {
+    //     if (req.body.email == 'null' && req.body.password == 'null') {
+    //         res.redirect('/account');
+    //     } else {
+    //         const { email, password } = req.body;
+    //         const user = await User.findOne({ email });
 
-            if (!user) {
-                alert = 'Tài khoản không tồn tại!';
-                reemail = null;
-                return res.redirect('back');
-            }
-            const isMatch = await bCrypt.compareSync(password, user.password);
+    //         if (!user) {
+    //             alert = 'Tài khoản không tồn tại!';
+    //             reemail = null;
+    //             return res.redirect('back');
+    //         }
+    //         const isMatch = await bCrypt.compareSync(password, user.password);
 
-            if (!isMatch) {
-                alert = 'Sai mật khẩu!';
-                reemail = user.email;
-                return res.redirect('back');
-            } else {
-                reemail = null;
-                alert = null;
-                req.session.isAuth = true;
-                req.session.username = user.username;
-                req.session.image = user.image;
-                res.redirect('/courses');
-            }
-        }
-    }
+    //         if (!isMatch) {
+    //             alert = 'Sai mật khẩu!';
+    //             reemail = user.email;
+    //             return res.redirect('back');
+    //         } else {
+    //             reemail = null;
+    //             alert = null;
+    //             req.session.isAuth = true;
+    //             res.redirect('/courses');
+    //         }
+    //     }
+    // }
 
     // POST /Account/logout
     logout(req, res, next) {

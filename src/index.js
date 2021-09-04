@@ -14,6 +14,12 @@ const db = require('./config/db');
 const session = require('express-session');
 const CheckUser = require('./app/middlewares/CheckUser');
 const MongoDBStore = require('connect-mongodb-session')(session);
+// passport
+const passport = require('passport');
+const connfb = require('./config/connfb');
+const User = require('./app/models/User');
+const LoginFB = require('./app/middlewares/LoginFB');
+const LoginLocal = require('./app/middlewares/LoginLocal');
 
 // connect to DB
 db.connect();
@@ -48,7 +54,44 @@ app.use(
 
 // Custom middleware
 app.use(SortMiddleware);
-app.get('/', CheckUser);
+// app.get('/courses/:slug', CheckUser);
+
+// passport fb
+passport.use(LoginFB);
+// passport local
+passport.use(LoginLocal);
+
+// Lưu session
+passport.serializeUser(function (user, done) {
+    return done(null, user);
+});
+passport.deserializeUser(function (id, done) {
+    return done(null, id);
+});
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Middleware facebook
+app.get(
+    '/auth/facebook/',
+    passport.authenticate('facebook', { scope: 'email' }),
+);
+app.get(
+    '/auth/facebook/callback',
+    passport.authenticate('facebook', {
+        successRedirect: '/courses',
+        failureRedirect: '/account',
+    }),
+);
+
+// Middleware Local
+app.post(
+    '/account/login',
+    passport.authenticate('local', {
+        successRedirect: '/courses',
+        failureRedirect: '/account',
+    }),
+);
 
 // HTTP log
 // app.use(morgan('combined'));

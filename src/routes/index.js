@@ -7,7 +7,6 @@ function route(app) {
     app.use('/account', accountRouter);
     app.use('/me', meRouter);
     app.use('/courses', coursesRouter);
-
     app.use('/', siteRouter);
     app.use('/:slug', siteRouter);
 }

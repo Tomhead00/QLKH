@@ -10,6 +10,14 @@ class SitesController {
             image: req.session.image,
         });
     }
+
+    failed(req, res) {
+        res.send('you are a none valid user');
+    }
+
+    profile(req, res) {
+        res.send('you are a valid user');
+    }
 }
 
 module.exports = new SitesController();
