@@ -1,23 +1,23 @@
-const facebookStratery = require('passport-facebook').Strategy;
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { ClientRequest } = require('http');
-const connfb = require('../../config/connfb');
+const conngg = require('../../config/conngg');
 const { User } = require('../models/User');
 
-module.exports = new facebookStratery(
+module.exports = new GoogleStrategy(
     {
-        clientID: connfb.facebook_key,
-        clientSecret: connfb.facebook_secret,
-        callbackURL: connfb.callback_url,
+        clientID: conngg.clientID,
+        clientSecret: conngg.clientSecret,
+        callbackURL: conngg.callbackURL,
         profileFields: [
             'id',
             'displayName',
             'name',
-            'gender',
+            // 'gender',
             'picture.type(large)',
             'email',
         ],
     },
-    function (token, refreshToken, profile, done) {
+    function (accessToken, refreshToken, profile, done) {
         // console.log(profile);
         // return done(null, profile);
         process.nextTick(function (req, res, next) {
@@ -42,6 +42,7 @@ module.exports = new facebookStratery(
                         // newUser.gender = profile.gender
                         newUser.image = profile.photos[0].value;
                         newUser.password = profile.id;
+                        console.log(newUser);
                         newUser.save(function (err) {
                             if (err) throw err;
                             // if successful, return the new user

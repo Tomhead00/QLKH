@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const { dirname } = require('path');
 const methodOverride = require('method-override');
+require('dotenv').config();
 
 const app = express();
 const port = 3000;
@@ -12,14 +13,15 @@ const SortMiddleware = require('./app/middlewares/SortMiddleware');
 const route = require('./routes');
 const db = require('./config/db');
 const session = require('express-session');
-const CheckUser = require('./app/middlewares/CheckUser');
 const MongoDBStore = require('connect-mongodb-session')(session);
+
+// Khai bao MiddleWare
 // passport
 const passport = require('passport');
-const connfb = require('./config/connfb');
-const User = require('./app/models/User');
 const LoginFB = require('./app/middlewares/LoginFB');
 const LoginLocal = require('./app/middlewares/LoginLocal');
+const LoginGG = require('./app/middlewares/LoginGG');
+const CheckUser = require('./app/middlewares/CheckUser');
 
 // connect to DB
 db.connect();
@@ -60,13 +62,15 @@ app.use(SortMiddleware);
 passport.use(LoginFB);
 // passport local
 passport.use(LoginLocal);
+// passport gg
+passport.use(LoginGG);
 
 // Lưu session
 passport.serializeUser(function (user, done) {
     return done(null, user);
 });
-passport.deserializeUser(function (id, done) {
-    return done(null, id);
+passport.deserializeUser(function (user, done) {
+    return done(null, user);
 });
 app.use(passport.initialize());
 app.use(passport.session());
@@ -76,22 +80,67 @@ app.get(
     '/auth/facebook/',
     passport.authenticate('facebook', { scope: 'email' }),
 );
+app.get('/auth/facebook/callback', function (req, res, next) {
+    passport.authenticate('facebook', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.render('./user/account', { alertfb: info.message });
+        }
+        req.logIn(user, function (err) {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('/courses');
+        });
+    })(req, res, next);
+});
+
+// Middleware gg
 app.get(
-    '/auth/facebook/callback',
-    passport.authenticate('facebook', {
-        successRedirect: '/courses',
-        failureRedirect: '/account',
+    '/auth/google',
+    passport.authenticate('google', {
+        scope: [
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
+        ],
     }),
 );
+app.get('/auth/google/callback', function (req, res, next) {
+    passport.authenticate('google', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.render('./user/account', { alertfb: info.message });
+        }
+        req.logIn(user, function (err) {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('/courses');
+        });
+    })(req, res, next);
+});
 
 // Middleware Local
-app.post(
-    '/account/login',
-    passport.authenticate('local', {
-        successRedirect: '/courses',
-        failureRedirect: '/account',
-    }),
-);
+app.post('/account/login', function (req, res, next) {
+    passport.authenticate('local', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.render('./user/account', { alert: info.message });
+        }
+        req.logIn(user, function (err) {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('/courses');
+        });
+    })(req, res, next);
+});
 
 // HTTP log
 // app.use(morgan('combined'));

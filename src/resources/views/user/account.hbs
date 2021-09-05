@@ -5,6 +5,7 @@
             <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Đăng nhập với Facebook</span> </button>
             <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-plus-g"></i> Đăng nhập với Google+</span> </button>
         </div>
+        <p id="alertfb" style="display: block; color: red; text-align: center">{{alert1}}</p>
         <p style="text-align:center"> Hoặc  </p>
         <div class="input-group">
             <input type="email" id="inputEmail" class="form-control" name="email" placeholder="Email address" required="" autofocus="" value="{{email}}">
@@ -25,8 +26,8 @@
         <button class="btn btn-primary btn-block" type="button" id="btn-signup"><i class="fas fa-user-plus"></i> Tạo tài khoản mới</button>
     </form>
 
-    <form action="#" class="form-reset">
-        <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+    <form action="/account/passwordReset" class="form-reset" method="POST">
+        <input type="email" id="resetEmail" name="email" class="form-control" placeholder="Email address" required="" autofocus="">
         <button class="btn btn-primary btn-block" type="submit">Khôi phục mật khẩu</button>
         <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i> Quay lại</a>
     </form>
@@ -42,7 +43,6 @@
         <p style="text-align:center">Hoặc</p>
 
         <input type="text" name="username" id="user-name" class="form-control" placeholder="Full name" required="" autofocus="">
-        <p id="alert-username" style="display: none">Tên tài khoản tồn tại! Vui lòng thử lại!</p>
         <input type="email" name="email" id="user-email" class="form-control" placeholder="Email address" required autofocus="">
         <p id="alert-email" style="display: none">Email đã được đăng ký! Vui lòng thử lại!</p>
         <input type="password" name="password" id="user-pass" class="form-control" placeholder="Password" required autofocus="">
@@ -61,10 +61,8 @@
     document.addEventListener("DOMContentLoaded", function () {
         var password = $("#user-pass");
         var repassword = $("#user-repeatpass");
-        var alert_username = $("#alert-username");
         var alert_password = $("#alert-password");
         var alert_email = $("#alert-email");
-        var username = $("#user-name");
         var email = $("#user-email");
 
         // login
@@ -103,24 +101,7 @@
                 alert_password.attr('style', 'display: inline; color: red');
             }
         });
-        // Check username
-        username.keyup(function checkusername() {
-            $.ajax({
-                url: '/account/check_username',
-                type: 'POST',
-                data: {
-                    username: username.val()
-                }
-            }).done(function(ketqua) {
-                if (ketqua == 1) {
-                    alert_username.attr('style', 'display: inline; color: red');
-                    username.attr('style', 'border-color: red');
-                } else {
-                    alert_username.attr('style', 'display: none');
-                    username.attr('style', false);
-                }
-            });
-        });
+
         // Check email
         email.keyup(function checkemail() {
             $.ajax({
@@ -156,10 +137,13 @@
             passwordInput.focus();
         }
         
-        //login with facbook
+        //login with facebook
         $('.btn.facebook-btn.social-btn').click(function(e) {
             window.location="/auth/facebook"
         })
-
+        //login with gg
+        $('.btn.google-btn.social-btn').click(function(e) {
+            window.location="/auth/google"
+        })
     })
 </script>

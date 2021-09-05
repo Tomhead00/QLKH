@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const User = require('../models/User');
+const { User } = require('../models/User');
 const bCrypt = require('bcrypt');
 
 module.exports = new LocalStrategy(
@@ -13,12 +13,14 @@ module.exports = new LocalStrategy(
                 return done(err);
             }
             if (!user) {
-                return done(null, false, { message: 'Incorrect email.' });
+                return done(null, false, {
+                    message: 'Tài khoản không tồn tại!',
+                });
             }
 
             var isMatch = bCrypt.compareSync(password, user.password);
             if (!isMatch) {
-                return done(null, false, { message: 'Incorrect password.' });
+                return done(null, false, { message: 'Sai mật khẩu!' });
             }
             return done(null, user);
         });
