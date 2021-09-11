@@ -26,6 +26,18 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: 'user',
         },
+        GT: {
+            type: String,
+            default: null,
+        },
+        SDT: {
+            type: String,
+            default: null,
+        },
+        adress: {
+            type: String,
+            default: null,
+        },
     },
     {
         timestamps: true,

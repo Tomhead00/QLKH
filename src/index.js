@@ -42,14 +42,19 @@ app.use(methodOverride('_method'));
 const store = new MongoDBStore({
     uri: 'mongodb://localhost:27017/QLKH',
     collection: 'mySessions',
+    expiresKey: `_ts`,
+    expiresAfterSeconds: 60 * 60 * 24 * 14,
 });
 
 // cookie session
 app.use(
     session({
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+        },
         secret: 'keyboard cat',
-        resave: false,
-        saveUninitialized: false,
+        resave: true,
+        saveUninitialized: true,
         store: store,
     }),
 );
@@ -86,7 +91,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            return res.render('./user/account', { alertfb: info.message });
+            return res.render('./user/account', { alert1: info.message });
         }
         req.logIn(user, function (err) {
             if (err) {
@@ -113,7 +118,7 @@ app.get('/auth/google/callback', function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            return res.render('./user/account', { alertfb: info.message });
+            return res.render('./user/account', { alert1: info.message });
         }
         req.logIn(user, function (err) {
             if (err) {
@@ -131,7 +136,10 @@ app.post('/account/login', function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            return res.render('./user/account', { alert: info.message });
+            return res.render('./user/account', {
+                alert: info.message,
+                email: info.email,
+            });
         }
         req.logIn(user, function (err) {
             if (err) {
@@ -154,25 +162,67 @@ app.engine(
             sum: (a, b) => a + b,
             sortable: (field, sort) => {
                 const sortType = field === sort.column ? sort.type : 'default';
-
                 const icons = {
                     default: 'oi oi-elevator',
                     asc: 'oi oi-sort-ascending',
                     desc: 'oi oi-sort-descending',
                 };
-
                 const types = {
                     default: 'desc',
                     asc: 'desc',
                     desc: 'asc',
                 };
-
                 const icon = icons[sortType];
                 const type = types[sortType];
-
                 return `<a href="?_sort&column=${field}&type=${type}">
                     <span class="${icon}"></span>
                     </a>`;
+            },
+            topmenu: (username) => {
+                var role = null;
+                var name = null;
+                var image = null;
+                try {
+                    var role = username.user.role;
+                    var name = username.user.username;
+                    var image = username.user.image;
+                } catch {}
+                if (role == 'admin') {
+                    return `
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="${image}" alt="" class="user-avatar">
+                        <b>${name}</b>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item text-danger" href="/me/stored/courses">Quản lý tài khoản</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#infor">Thông tin tài khoản</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/courses/create">Đăng khóa học</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#exampleModal" href="#">Đăng xuất</a>
+                    </div>`;
+                }
+                if (role == 'user') {
+                    return `
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="${image}" alt="" class="user-avatar">
+                        <b>${name}</b>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#infor">Thông tin tài khoản</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/courses/create">Đăng khóa học</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#exampleModal" href="#">Đăng xuất</a>
+                    </div>`;
+                } else {
+                    return `<a class="nav-link ml-4" href="/account"><b>Đăng nhập</b></a>`;
+                }
             },
         },
     }),

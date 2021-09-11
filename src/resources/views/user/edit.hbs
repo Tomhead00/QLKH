@@ -1,0 +1,122 @@
+<div class="container p">
+    <div class="p-5 ml-5 mr-5">
+        <h3 class="text-center"><b>Cập nhật thông tin tài khoản</b></h3>
+        <p id="alert" style="display: block; color: red; text-align: center">{{alert}}</p>
+
+        <form class="mt-4 formEdit" method="POST" action="/account/{{user._id}}?_method=PUT">
+            <div class="form-group">
+                <label for="name">Tên tài khoản:</label>
+                <input type="text" class="form-control" value="{{user.username}}" id="username" name="username" disabled>
+            </div>
+            <div class="form-group">
+                <label for="mieuta">Giới tính:</label>
+                <select class="form-control" id="GT" name="GT">
+                    <option value=""></option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="videoID">Email:</label>
+                <input type="text" class="form-control" value="{{user.email}}" id="email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="videoID">SĐT:</label>
+                <input type="number" class="form-control" value="{{user.SDT}}" id="SDT" name="SDT">
+            </div>
+            <div class="form-group">
+                <label for="videoID">Địa chỉ:</label>
+                <input type="text" class="form-control" value="{{user.address}}" id="address" name="address">
+            </div>
+            <div>
+                <input type="button" class="btn btn-success DMK" data-toggle="modal" data-target="#DMK" value="Đổi mật khẩu">
+                <button type="submit" class="btn btn-primary float-right ml-2">Lưu lại</button>
+                <input type="button" class="btn btn-danger cancel float-right" value="Quay lại">
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{{!-- Modal change password --}}
+<div class="modal fade" id="DMK">
+    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+    
+        <!-- Modal Header -->
+        <div class="modal-header">
+        <h4 class="modal-title">Đổi mật khẩu:</h4>
+        <button type="button" class="close btn btn-danger" data-dismiss="modal">&times;</button>
+        </div>
+
+        <form method="POST" action="DMK.php">
+        <div class="modal-body">
+            <table class="table table-striped">
+            <tr>
+                <td>Nhập mật khẩu cũ (*):</td>
+                <td>
+                <input type="password" name="passWordOld" class="passWordOld" id="passWordOld" required>
+                <td style="display: none;"><input type="number" name="ID_User" class="ID_User" id="ID_User"></td>
+                </td>
+            </tr>
+            <tr>
+                <td>Mật khẩu mới(*):</td>
+                <td>
+                <input type="password" name="passWordNew" class="passWordNew" id="passWordNew" required>
+                </td>
+            </tr>
+            <tr>
+                <td>Nhập lại Mật khẩu (*):</td>
+                <td>
+                <input type="password" name="passWordRe" class="passWordRe" id="passWordRe" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p id="alertPass" style="display: none;">Mật khẩu nhập lại không đúng! Vui lòng nhập lại!</p>
+                </td>
+            </tr>
+            </table>
+        </div>   
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success" name="submit" onclick="CheckMK()">Save</button>
+        </div>
+        </form>
+    </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // zone khai bao
+        var alert = $("#alert");
+        var selectGT = $("#GT");
+        var cancelForm = $(".btn.btn-danger.cancel.float-right");
+        var formEdit = $(".formEdit");
+        var passNew = $("#passWordNew");
+        var passRe = $("#passWordRe")
+        var alertPass = $("#alertPass");
+        //
+
+        // DOM Gioi tinh
+        selectGT.val("{{user.role}}").change();
+
+        // Btn cancel
+        cancelForm.click(function() {
+            window.history.back();
+        })
+
+        // Check Password
+        $("#passWordNew,#passWordRe").keyup(function checkpassword() {
+            if(passNew.val() == passRe.val()) {
+                alertPass.attr('style', 'display: none');
+                passRe.attr('style', false);
+            } else {
+                passRe.attr('style', 'border-color: red');
+                alertPass.attr('style', 'display: inline; color: red');
+            }
+        });
+    });
+</script>

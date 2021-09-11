@@ -49,7 +49,7 @@
         <input type="password" name="passwordConfirmation" id="user-repeatpass" class="form-control" placeholder="Confirm Password" required autofocus="">
         <p id="alert-password" style="display: none">Mật khẩu nhập lại không đúng! Vui lòng nhập lại!</p>
         <div class="input-group">
-        <button class="btn btn-md btn-block submit" type="submit"><i class="fas fa-user-plus"></i> Đăng ký</button>
+        <button class="btn btn-md btn-block submit register" type="submit"><i class="fas fa-user-plus"></i> Đăng ký</button>
         </div>
 
         <a href="#" id="cancel_signup"><i class="fa fa-angle-left"></i> Quay lại</a>
@@ -65,9 +65,12 @@
         var alert_email = $("#alert-email");
         var email = $("#user-email");
 
+        //register
+        var formRegister = $(".form-signup")
+        var btnFormRegister = $('.btn.btn-md.btn-block.submit.register');
+
+
         // login
-        var login = $(".btn.btn-md.btn-rounded.btn-block.form-control.submit");
-        var alert_login = $("#alert-login")
         var emailInput = $("#inputEmail");
         var passwordInput = $("#inputPassword");
 
@@ -123,15 +126,16 @@
         });
 
         //submit create account
-        $('.btn.btn-md.btn-block.submit').click(function(e) {
-            var check = $('.form-signup').find("input[style='border-color: red']").length;
-            // console.log(check);
-            if(check > 0) {
-                e.preventDefault();
+        formRegister.submit(function(e) {
+            e.preventDefault();
+            var check = formRegister.find("input[style='border-color: red']").length;
+            console.log(check);
+            if(check == 0) {
+                formRegister.unbind().submit();
             }
         })
 
-        //login
+        // set email when login
         if(emailInput.val().length > 1) {
             passwordInput.attr('style','border-color: red');
             passwordInput.focus();

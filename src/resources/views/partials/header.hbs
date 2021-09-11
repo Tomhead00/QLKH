@@ -15,30 +15,18 @@
         </li>
       </ul>
       <ul class="navbar-nav ml-auto">
-        {{#if username}}
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img src="{{image}}" alt="" class="user-avatar">
-            <b>{{username}}</b>
-            </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="/courses/create">Đăng khóa học</a>
-            <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>
-            <div class="dropdown-divider"></div>
-              <a class="dropdown-item" data-toggle="modal" data-target="#exampleModal">Đăng xuất</a>
-          </div>
+          {{{topmenu username}}}
         </li>
-        {{else}}
-          <a class="nav-link ml-4" href="/account"><b>Đăng nhập</b></a>
-        {{/if}}
       </ul>
     </div>
   </div>
 </nav>
 
+<div id="derekData"></div>
 
-<!-- Modal Logout-->
+
+{{!-- Modal Logout --}}
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -61,12 +49,46 @@
 
 <form method="POST" id="form-submit" action="/account/logout"></form>
 
+{{!-- Modal show infor user --}}
+<div class="modal fade bd-example-modal-lg" id="infor">
+  <div class="modal-dialog modal-lg inforuser modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title"><b>Thông tin tài khoản</b></h4>
+        <button type="button" class="close btn btn-danger" data-dismiss="modal">&times;</button>
+      </div>
+
+        <div class="modal-body">
+            <div class="row">
+              <div class="col-md-4 d-flex justify-content-center p-4">
+                <img src="{{username.user.image}}" alt="image" width="236" height="236">
+              </div>
+              <div class="col-md-8 ml-auto pt-5">
+                <h5>Tên tài khoản: <span class="userName">{{username.user.username}}</span></h5>
+                <h5>Email: <span class="email">{{username.user.email}}</span></h5>
+                <h5>Giới tính: <span class="gioiTinh">{{username.user.GT}}</span></h5>
+                <h5>SĐT: <span class="sdt">{{username.user.SDT}}</span></h5>
+                <h5>Địa chỉ: <span class="diaChi">{{username.user.address}}</span></h5>
+              </div>
+            </div>
+        </div>
+         
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" title="Cập nhật thông tin"><a style="text-decoration: none; color: white;" href="/account/edit/{{username.user._id}}">Cập nhật thông tin</a></button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+{{!-- zone script --}}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
       var form_submit = $("#form-submit");
-
       $("#btn-logout").click(function() {
           form_submit.submit();
       })
     });
 </script>
+
+

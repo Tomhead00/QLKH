@@ -1,25 +1,18 @@
 const Course = require('../models/Course');
 const { mongooseToObject } = require('../../util/mongoose');
 const { multipleMongooseToObject } = require('../../util/mongoose');
+
 var username = null;
 var image = null;
 
 class CourseController {
     // GET /course
     course(req, res, next) {
-        try {
-            username = req.session.passport.user.username;
-            image = req.session.passport.user.image;
-        } catch {
-            username = null;
-            image = null;
-        }
         Course.find({})
             .then((courses) => {
                 res.render('courses/courses', {
                     courses: multipleMongooseToObject(courses),
-                    username: username,
-                    image: image,
+                    username: req.session.passport,
                 });
             })
             .catch(next);
@@ -31,8 +24,7 @@ class CourseController {
             .then((course) => {
                 res.render('courses/show', {
                     course: mongooseToObject(course),
-                    username: username,
-                    image: image,
+                    username: req.session.passport,
                 });
             })
             .catch(next);
@@ -41,16 +33,8 @@ class CourseController {
 
     // GET /courses/create
     create(req, res, next) {
-        try {
-            username = req.session.passport.user.username;
-            image = req.session.passport.user.image;
-        } catch {
-            username = null;
-            image = null;
-        }
         res.render('courses/create', {
-            username: username,
-            image: image,
+            username: req.session.passport,
         });
     }
 

@@ -20,7 +20,10 @@ module.exports = new LocalStrategy(
 
             var isMatch = bCrypt.compareSync(password, user.password);
             if (!isMatch) {
-                return done(null, false, { message: 'Sai mật khẩu!' });
+                return done(null, false, {
+                    message: 'Sai mật khẩu!',
+                    email: user.email,
+                });
             }
             return done(null, user);
         });
