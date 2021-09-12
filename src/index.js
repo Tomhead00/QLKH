@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const { dirname } = require('path');
 const methodOverride = require('method-override');
+const multer = require('multer');
 require('dotenv').config();
 
 const app = express();
@@ -69,7 +70,6 @@ passport.use(LoginFB);
 passport.use(LoginLocal);
 // passport gg
 passport.use(LoginGG);
-
 // Lưu session
 passport.serializeUser(function (user, done) {
     return done(null, user);
@@ -150,6 +150,19 @@ app.post('/account/login', function (req, res, next) {
     })(req, res, next);
 });
 
+// upload image
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'src/public/img/user');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    },
+});
+
+var upload = multer({ storage: storage });
+app.put('/account/edit/:id/', upload.single('myFile'));
+
 // HTTP log
 // app.use(morgan('combined'));
 
@@ -194,7 +207,7 @@ app.engine(
                         <b>${name}</b>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item text-danger" href="/me/stored/courses">Quản lý tài khoản</a>
+                        <a class="dropdown-item text-danger" href="/manager/account">Quản lý tài khoản</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#infor">Thông tin tài khoản</a>
                         <div class="dropdown-divider"></div>

@@ -3,6 +3,8 @@ const router = express.Router();
 const accountController = require('../app/controllers/AccountController');
 
 router.get('/edit/:id/', accountController.edit);
+router.put('/edit/:id/', accountController.update);
+router.put('/edit/password/:id/', accountController.pwd);
 
 router.post('/passwordReset', accountController.passwordReset);
 router.get('/password-reset/:userId/:token/', accountController.formReset);

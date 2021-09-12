@@ -1,38 +1,46 @@
 <div class="container p">
-    <div class="p-5 ml-5 mr-5">
+    <div class="m-5 ml-4 mr-4">
         <h3 class="text-center"><b>Cập nhật thông tin tài khoản</b></h3>
         <p id="alert" style="display: block; color: red; text-align: center">{{alert}}</p>
 
-        <form class="mt-4 formEdit" method="POST" action="/account/{{user._id}}?_method=PUT">
-            <div class="form-group">
-                <label for="name">Tên tài khoản:</label>
-                <input type="text" class="form-control" value="{{user.username}}" id="username" name="username" disabled>
-            </div>
-            <div class="form-group">
-                <label for="mieuta">Giới tính:</label>
-                <select class="form-control" id="GT" name="GT">
-                    <option value=""></option>
-                    <option value="Nam">Nam</option>
-                    <option value="Nữ">Nữ</option>
-                    <option value="Khác">Khác</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="videoID">Email:</label>
-                <input type="text" class="form-control" value="{{user.email}}" id="email" name="email">
-            </div>
-            <div class="form-group">
-                <label for="videoID">SĐT:</label>
-                <input type="number" class="form-control" value="{{user.SDT}}" id="SDT" name="SDT">
-            </div>
-            <div class="form-group">
-                <label for="videoID">Địa chỉ:</label>
-                <input type="text" class="form-control" value="{{user.address}}" id="address" name="address">
-            </div>
-            <div>
-                <input type="button" class="btn btn-success DMK" data-toggle="modal" data-target="#DMK" value="Đổi mật khẩu">
-                <button type="submit" class="btn btn-primary float-right ml-2">Lưu lại</button>
-                <input type="button" class="btn btn-danger cancel float-right" value="Quay lại">
+        <form class="mt-4 formEdit" method="POST" action="/account/edit/{{user._id}}?_method=PUT" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-4 align-self-center justify-content-center">
+                    <img class="ml-3" id="image" src="{{username.user.image}}" alt="image" width="260" height="240" style="border: 2px solid;">
+                    <input type='file' class="mt-3" name="myFile" accept="image/*">
+                </div>
+                <div class="col-7 ml-2">
+                    <div class="form-group">
+                        <label for="name">Tên tài khoản:</label>
+                        <input type="text" class="form-control" value="{{user.username}}" id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="mieuta">Giới tính:</label>
+                        <select class="form-control" id="GT" name="GT">
+                            <option value=""></option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="videoID">Email:</label>
+                        <input type="text" class="form-control" value="{{user.email}}" id="email" name="email" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="videoID">SĐT:</label>
+                        <input type="number" class="form-control" value="{{user.SDT}}" id="SDT" name="SDT">
+                    </div>
+                    <div class="form-group">
+                        <label for="videoID">Địa chỉ:</label>
+                        <input type="text" class="form-control" value="{{user.address}}" id="address" name="address">
+                    </div>
+                    <div>
+                        <input type="button" class="btn btn-success DMK" data-toggle="modal" data-target="#DMK" value="Đổi mật khẩu">
+                        <button type="submit" class="btn btn-primary float-right ml-2">Lưu lại</button>
+                        <input type="button" class="btn btn-danger cancel float-right" value="Quay lại">
+                    </div>
+                </div>
             </div>
         </form>
 
@@ -50,26 +58,25 @@
         <button type="button" class="close btn btn-danger" data-dismiss="modal">&times;</button>
         </div>
 
-        <form method="POST" action="DMK.php">
+        <form method="POST" action="/account/edit/password/{{user._id}}?_method=PUT">
         <div class="modal-body">
             <table class="table table-striped">
             <tr>
                 <td>Nhập mật khẩu cũ (*):</td>
                 <td>
-                <input type="password" name="passWordOld" class="passWordOld" id="passWordOld" required>
-                <td style="display: none;"><input type="number" name="ID_User" class="ID_User" id="ID_User"></td>
+                    <input type="password" name="passOld" class="passOld" id="passOld" required>
                 </td>
             </tr>
             <tr>
                 <td>Mật khẩu mới(*):</td>
                 <td>
-                <input type="password" name="passWordNew" class="passWordNew" id="passWordNew" required>
+                    <input type="password" name="passNew" class="passNew" id="passNew" required>
                 </td>
             </tr>
             <tr>
                 <td>Nhập lại Mật khẩu (*):</td>
                 <td>
-                <input type="password" name="passWordRe" class="passWordRe" id="passWordRe" required>
+                    <input type="password" name="passRe" class="passRe" id="passRe" required>
                 </td>
             </tr>
             <tr>
@@ -81,7 +88,7 @@
         </div>   
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-success" name="submit" onclick="CheckMK()">Save</button>
+            <button type="submit" class="btn btn-success">Cập nhật</button>
         </div>
         </form>
     </div>
@@ -95,13 +102,15 @@
         var selectGT = $("#GT");
         var cancelForm = $(".btn.btn-danger.cancel.float-right");
         var formEdit = $(".formEdit");
-        var passNew = $("#passWordNew");
-        var passRe = $("#passWordRe")
+        var passNew = $("#passNew");
+        var passRe = $("#passRe")
         var alertPass = $("#alertPass");
+        var inputFile = $("input[type=file]");
+        var image = $("#image");
         //
 
         // DOM Gioi tinh
-        selectGT.val("{{user.role}}").change();
+        selectGT.val("{{user.GT}}").change();
 
         // Btn cancel
         cancelForm.click(function() {
@@ -109,7 +118,7 @@
         })
 
         // Check Password
-        $("#passWordNew,#passWordRe").keyup(function checkpassword() {
+        $("#passNew,#passRe").keyup(function checkpassword() {
             if(passNew.val() == passRe.val()) {
                 alertPass.attr('style', 'display: none');
                 passRe.attr('style', false);
@@ -118,5 +127,17 @@
                 alertPass.attr('style', 'display: inline; color: red');
             }
         });
+        // When change image
+        inputFile.change(function(e) {
+             var file = inputFile.get(0).files[0];
+            if(file){
+              var reader = new FileReader();
+              reader.onload = function(){
+                  image.attr("src", reader.result);
+              }
+              reader.readAsDataURL(file);
+            }
+        })
+
     });
 </script>

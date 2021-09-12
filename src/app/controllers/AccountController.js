@@ -6,6 +6,7 @@ const sendEmail = require('../../util/sendEmail');
 const crypto = require('crypto');
 const { mongooseToObject } = require('../../util/mongoose');
 const { multipleMongooseToObject } = require('../../util/mongoose');
+fs = require('fs');
 
 // Khai báo vài thứ
 
@@ -51,7 +52,7 @@ class AccountController {
         ) {
             const user = new User(req.body);
             // console.log(user.password);
-            user.image = '/img/user/default.png';
+            user.image = '/img/user/default.jpg';
             user.password = bCrypt.hashSync(
                 user.password,
                 bCrypt.genSaltSync(10),
@@ -163,6 +164,56 @@ class AccountController {
                 }),
             )
             .catch(next);
+    }
+
+    // PUT /account/edit/:id
+    async update(req, res, next) {
+        if (req.file) {
+            req.body.image = '/img/user/' + req.file.filename;
+
+            if (req.session.passport.user.image != '/img/user/default.jpg')
+                fs.unlinkSync('./src/public' + req.session.passport.user.image);
+        }
+
+        await User.updateOne({ _id: req.params.id }, req.body)
+            .then(async () => {
+                var user = await User.findById(req.params.id);
+                req.session.passport.user = user;
+                res.redirect('/courses');
+            })
+            .catch(next);
+    }
+
+    // PUT /account/edit/password/:id
+    async pwd(req, res, next) {
+        // res.json(req.body);
+        // console.log(req.body);
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.render('user/edit', {
+                user: mongooseToObject(user),
+                username: req.session.passport,
+                alert: 'Tài khoản không tồn tại!',
+            });
+        }
+
+        const check = bCrypt.compareSync(req.body.passOld, user.password);
+        // console.log(check);
+        if (!check) {
+            return res.render('user/edit', {
+                user: mongooseToObject(user),
+                username: req.session.passport,
+                alert: 'Sai mật khẩu! Vui lòng thử lại!',
+            });
+        }
+        user.password = bCrypt.hashSync(
+            req.body.passNew,
+            bCrypt.genSaltSync(10),
+            null,
+        );
+        user.save();
+        req.session.passport.user = user;
+        res.redirect('/account/edit/' + user._id);
     }
 }
 
