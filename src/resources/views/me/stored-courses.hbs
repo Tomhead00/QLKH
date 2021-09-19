@@ -2,11 +2,8 @@
   <form name="container-form" method="POST" class="mt-4" action="/courses/handle-form-actions">
     <div>
       <h3>Khóa học của tôi</h3>
-      {{!-- {{#if deletedCount}} --}}
-      <a href="/me/trash/courses">Thùng rác ({{deletedCount}})</a>
-      {{!-- {{/if}} --}}
 
-      <div class="mt-4 d-flex align-items-center">
+      <div class="mt-4 mb-2 d-flex align-items-center">
         <div class="form-check">
           <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
           <label class="form-check-label" for="checkbox-all" >
@@ -18,6 +15,8 @@
           <option value="delete">Xóa</option>
         </select>
         <button class="btn btn-primary btn-sm check-all-submit-btn" disabled>Thực hiện</button>
+        <a href="#" class="btn btn-primary btn-sm ml-auto mr-2" data-toggle="modal" data-target="#addKH" title="Thêm khóa học"><i class="fas fa-plus-circle"></i></a>
+        <a href="/me/trash/courses" class="btn btn-primary btn-sm" title="Xóa khóa học"><i class="fas fa-trash-alt"></i> ({{deletedCount}})</a>
       </div>
     </div>
 
@@ -27,8 +26,9 @@
                 <th scope="col"></th>
                 <th scope="col">ID {{{sortable '_id' _sort}}}</th>
                 <th scope="col">Tên khóa học {{{sortable 'name' _sort}}}</th>
+                <th scope="col">Miêu tả khóa học {{{sortable 'mieuta' _sort}}}</th>
                 <th scope="col">Thời gian tạo  {{{sortable 'createdAt' _sort}}}</th>
-                <th scope="col" colspan="2">Thời gian cập nhật  {{{sortable 'updatedAt' _sort}}}</th>
+                <th scope="col">Thời gian cập nhật  {{{sortable 'updatedAt' _sort}}}</th>
             </tr>
         </thead>
         <tbody>
@@ -41,10 +41,11 @@
                 </td>
                 <th scope="row">{{this._id}}</th>
                 <td>{{this.name}}</td>
+                <td>{{this.mieuta}}</td>
                 <td>{{this.createdAt}}</td>
                 <td>{{this.updatedAt}}</td>
                 <td>
-                    <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</a>
+                    <a href="/me/stored/{{this._id}}/edit" class="btn btn-link">Sửa</a>
                     <a href="" class="btn btn-link" data-toggle="modal" data-target="#delete-course-model" data-id="{{this._id}}">Xóa</a>
                 </td>
             </tr>
@@ -82,8 +83,44 @@
   </div>
 </div>
 
-{{!-- Delete hidden form --}}
+{{!-- Modal thêm khóa học --}}
+<div class="modal fade" id="addKH">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+    
+        <!-- Modal Header -->
+        <div class="modal-header">
+        <h4 class="modal-title">Thêm khóa học:</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
 
+        <form method="POST" action="/courses/store">
+        <div class="modal-body">
+            <table class="table table-striped">
+              <tr>
+                  <td width="20px"><h5>Tên khóa học:</h5></td>
+                  <td>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                  </td>
+              </tr>
+              <tr>
+                  <td><h5>Miêu tả khóa học:</h5></td>
+                  <td>
+                    <textarea type="text" class="form-control" id="mieuta" name="mieuta" required></textarea>
+                  </td>
+              </tr>
+            </table>
+        </div>   
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success">Thêm khóa học</button>
+        </div>
+        </form>
+    </div>
+    </div>
+</div>
+
+{{!-- Delete hidden form --}}
 <form method="POST" name="delete-course-form"></form>
 
 
@@ -131,14 +168,6 @@
             checkAllSubmitBtn.attr('disabled', true);
           }
         }
-
-        // Check all submit button clicked
-        /*containerForm.on('submit', function(e) {
-          var isSubmittable = !$(checkAllSubmitBtn).hasClass('disabled');
-          if(!isSubmittable) {
-            e.preventDefault();
-          }
-        })*/
     })
 
 </script>

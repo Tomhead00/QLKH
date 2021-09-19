@@ -211,8 +211,6 @@ app.engine(
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#infor">Thông tin tài khoản</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/courses/create">Đăng khóa học</a>
-                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" data-toggle="modal" data-target="#exampleModal" href="#">Đăng xuất</a>
@@ -226,8 +224,6 @@ app.engine(
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#infor">Thông tin tài khoản</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/courses/create">Đăng khóa học</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>
                         <div class="dropdown-divider"></div>

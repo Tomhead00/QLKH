@@ -1,28 +1,83 @@
-@import 'variables';
-h1 {
-    color: $red-color;
+// Card
+.card {
+    transition: 0.5s;
+    max-height: 550px;
 }
-
-.card-course-item {
-    margin-top: 20px;
+.card:hover {
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.2);
 }
-
-.checkbox-select-all-options {
-    width: 160px;
-    margin: 0px 16px;
+.card .box {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
 }
-
-.user-avatar {
-    width: 28px;
-    height: 28px;
+.card .box .img {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
     border-radius: 50%;
-    margin-right: 4px;
+    overflow: hidden;
+}
+.card .box .img img {
+    width: 100%;
+    height: 100%;
+}
+.card .box h2 {
+    font-size: 20px;
+    color: #262626;
+    margin: 20px auto;
+}
+.card .box h2 span {
+    font-size: 14px;
+    background: #e91e63;
+    color: #fff;
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 15px;
+}
+.card .box p {
+    color: #262626;
+}
+.card .box span {
+    display: inline-flex;
+}
+.card .box ul {
+    margin: 0;
+    padding: 0;
+}
+.card .box ul li {
+    list-style: none;
+    float: left;
+}
+.card .box ul li a {
+    display: block;
+    color: #aaa;
+    margin: 0 10px;
+    font-size: 20px;
+    transition: 0.5s;
+    text-align: center;
+}
+.card .box ul li:hover a {
+    color: #e91e63;
+    transform: rotateY(360deg);
 }
 
+.card-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
+}
 // account
 body {
     width: 100%;
-    height: auto;
+    height: 100%;
     background: -webkit-linear-gradient(white);
     font-family: 'Robato', sans-serif;
     font-size: 17px;
@@ -70,8 +125,13 @@ body {
 #logreg-forms .social-btn {
     font-weight: 100;
     color: white;
-    width: 190px;
+    width: 350px;
     font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.logincss {
+    margin-left: 15px;
 }
 
 #logreg-forms a {
@@ -103,7 +163,7 @@ body {
 }
 
 #logreg-forms .form-signup .social-btn {
-    width: 210px;
+    width: 350px;
 }
 
 #logreg-forms .form-signup input {
@@ -111,7 +171,7 @@ body {
 }
 
 .form-signup .social-login {
-    width: 210px !important;
+    width: 350px !important;
     margin: 0 auto;
 }
 
@@ -270,4 +330,96 @@ table.table td i {
     float: left;
     margin-top: 6px;
     font-size: 95%;
+}
+// search
+.searchbar {
+    margin-bottom: auto;
+    margin-top: auto;
+    height: 60px;
+    background-color: #353b48;
+    border-radius: 30px;
+    padding: 10px;
+}
+
+.search_input {
+    color: white;
+    border: 0;
+    outline: 0;
+    background: none;
+    width: 0;
+    caret-color: transparent;
+    line-height: 40px;
+    transition: width 0.4s linear;
+}
+
+.searchbar:hover > .search_input {
+    padding: 0 10px;
+    width: 450px;
+    caret-color: red;
+    transition: width 0.4s linear;
+}
+
+.searchbar:hover > .search_icon {
+    background: white;
+    color: #e74c3c;
+}
+
+.search_icon {
+    height: 40px;
+    width: 40px;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+}
+
+// custom
+.app {
+    min-height: 100vh;
+}
+
+.checkbox-select-all-options {
+    width: 160px;
+    margin: 0px 16px;
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    margin-right: 4px;
+}
+
+.card-title,
+.text2line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
+}
+
+.card-footer {
+    margin: 0px;
+    padding: 0px;
+}
+
+.card-deck {
+    width: 360px;
+}
+
+.viewall {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.listVideo {
+    padding-left: 50px;
+    padding-right: 70px;
 }

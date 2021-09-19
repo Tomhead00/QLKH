@@ -5,23 +5,18 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const Schema = mongoose.Schema;
 
-const Course = new Schema(
+const Video = new Schema(
     {
         _id: { type: Number },
         name: { type: String, default: '' },
         mieuta: { type: String, default: '' },
         image: { type: String, default: '' },
         slug: { type: String, slug: 'name', unique: true },
-        dangky: [
+        videoID: { type: String, default: '' },
+        course: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-            },
-        ],
-        video: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Video',
+                ref: 'Course',
             },
         ],
     },
@@ -33,7 +28,7 @@ const Course = new Schema(
 
 // add plugin
 mongoose.plugin(slug);
-Course.plugin(AutoIncrement, { inc_field: '_id' });
-Course.plugin(mongooseDelete, { overrideMethods: 'all', deletedAt: true });
+Video.plugin(AutoIncrement, { id: '_id_video', inc_field: '_id' });
+Video.plugin(mongooseDelete, { overrideMethods: 'all', deletedAt: true });
 
-module.exports = mongoose.model('Course', Course);
+module.exports = mongoose.model('Video', Video);

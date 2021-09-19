@@ -1,24 +1,110 @@
 <div class="container">
+    <div class="row">
+        <div class="d-flex justify-content-end mt-4">
+            <div class="searchbar">
+            <input class="search_input" type="text" name="" placeholder="Search...">
+            <a href="#" class="search_icon"><i class="fas fa-search"></i></a>
+            </div>
+        </div>
+    </div>
+
     <div class="mt-4">
         <div class="row">
-
+            <h3 class="mb-0 col-sm-4"><b>Các khóa học đã tham gia:</b></h3>
+            <a class="col-sm-8 text-right" href="#">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
+        </div>
+        <div class="row">
             {{#each courses}}
-            <div class="col-sm-3 col-lg-4 card-deck">
+            <div class="col-sm-3 col-lg-3 card-deck mt-4">
                 <div class="card card-course-item">
                     <a href="/courses/{{this.slug}}">
                         <img class="card-img-top" src="{{this.image}}" alt="{{this.image}}">
                     </a>
+
+                    <div class="card-body">
+                        <a href="/courses/{{this.slug}}">
+                            <h5 class="card-title">{{this.name}}</h5>
+                        </a>
+                        <p class="card-text">{{this.mieuta}}</p>
+                        <p><img src="{{this.image}}" alt="" class="user-avatar"><b>{{this.user}}</b></p>
+                        <div class="card-footer d-flex">
+                            <small class="text-muted time">{{this.updatedAt}}</small>
+                            <small class="text-muted ml-auto"><i class="fas fa-users"></i> 1000</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+
+    <div class="mt-4">
+        <div class="row">
+            <h3 class="mb-0 col-sm-4"><b>Các khóa học nổi bật:</b></h3>
+            <a class="col-sm-8 text-right" href="#">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
+        </div>
+        <div class="row">
+            {{#each courses}}
+            <div class="col-sm-3 col-lg-3 card-deck mt-4">
+                <div class="card card-course-item">
+                    <a href="/courses/{{this.slug}}">
+                        <img class="card-img-top" src="{{this.image}}" alt="{{this.image}}">
+                    </a>
+
                     <div class="card-body">
                             <a href="/courses/{{this.slug}}">
                                 <h5 class="card-title">{{this.name}}</h5>
                             </a>
                         <p class="card-text">{{this.mieuta}}</p>
-                        <a href="#" class="btn btn-primary">Mua khóa học</a>
+                        <p><img src="https://source.unsplash.com/random/306x230" alt="" class="user-avatar"><b>xxx</b></p>
+                        <div class="card-footer d-flex">
+                            <small class="text-muted time">{{this.updatedAt}}</small>
+                            <small class="text-muted ml-auto"><i class="fas fa-users"></i> 1000</small>
+                        </div>
                     </div>
                 </div>
             </div>
             {{/each}}
+        </div>
+    </div>
 
+    <div class="mt-4">
+        <div class="row">
+            <h3 class="mb-0 col-sm-4"><b>Các khóa học khác:</b></h3>
+            <a class="col-sm-8 text-right" href="#">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
+        </div>
+        <div class="row">
+            {{#each courses}}
+            <div class="col-sm-3 col-lg-3 card-deck mt-4">
+                <div class="card card-course-item">
+                    <a href="/courses/{{this.slug}}">
+                        <img class="card-img-top" src="{{this.image}}" alt="{{this.image}}">
+                    </a>
+
+                    <div class="card-body">
+                            <a href="/courses/{{this.slug}}">
+                                <h5 class="card-title">{{this.name}}</h5>
+                            </a>
+                        <p class="card-text">{{this.mieuta}}</p>
+                        <p><img src="https://source.unsplash.com/random/306x230" alt="" class="user-avatar"><b>xxx</b></p>
+                        <div class="card-footer d-flex">
+                            <small class="text-muted time">{{this.updatedAt}}</small>
+                            <small class="text-muted ml-auto"><i class="fas fa-users"></i> 1000</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
         </div>
     </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var time = $(".time").map(function() {
+        $(this).text(moment($(this).text()).fromNow());
+    }).get();
+
+  })
+</script>

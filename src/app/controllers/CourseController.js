@@ -1,21 +1,19 @@
 const Course = require('../models/Course');
+const Video = require('../models/Video');
 const { mongooseToObject } = require('../../util/mongoose');
 const { multipleMongooseToObject } = require('../../util/mongoose');
-
-var username = null;
-var image = null;
+const moment = require('moment');
+const { array } = require('joi');
 
 class CourseController {
     // GET /course
-    course(req, res, next) {
-        Course.find({})
-            .then((courses) => {
-                res.render('courses/courses', {
-                    courses: multipleMongooseToObject(courses),
-                    username: req.session.passport,
-                });
-            })
-            .catch(next);
+    async course(req, res, next) {
+        const courses = await Course.find({}).sort({ updatedAt: -1 }).limit(4);
+
+        res.render('courses/courses', {
+            courses: multipleMongooseToObject(courses),
+            username: req.session.passport,
+        });
     }
 
     // GET /courses/:slug
@@ -31,32 +29,27 @@ class CourseController {
         // res.send('Course Detail - ' + req.params.slug);
     }
 
-    // GET /courses/create
-    create(req, res, next) {
-        res.render('courses/create', {
-            username: req.session.passport,
-        });
-    }
-
     // POST /courses/store
     store(req, res, next) {
         // res.json(req.body)
-        req.body.image = `https://img.youtube.com/vi/${req.body.videoID}/sddefault.jpg`;
+        var array = [
+            '?technology',
+            '?nature',
+            '?color',
+            '?cpu',
+            '?Coutryside',
+            '?Fruit',
+            '?Vegatables',
+            '?people',
+            '?ai',
+            '?sunny',
+        ];
+        var randomElement = array[Math.floor(Math.random() * array.length)];
+        req.body.image = `https://source.unsplash.com/random/306x230/${randomElement}`;
         const course = new Course(req.body);
         course
             .save()
             .then(() => res.redirect('/me/stored/courses'))
-            .catch(next);
-    }
-
-    // GET /courses/:id/edit
-    edit(req, res, next) {
-        Course.findById(req.params.id)
-            .then((course) =>
-                res.render('courses/edit', {
-                    course: mongooseToObject(course),
-                }),
-            )
             .catch(next);
     }
 

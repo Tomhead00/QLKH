@@ -1,5 +1,7 @@
 const Course = require('../models/Course');
+const Video = require('../models/Video');
 const { multipleMongooseToObject } = require('../../util/mongoose');
+const { mongooseToObject } = require('../../util/mongoose');
 
 var username = null;
 var image = null;
@@ -34,6 +36,38 @@ class MeController {
                     courses: multipleMongooseToObject(courses),
                 }),
             )
+            .catch(next);
+    }
+
+    // GET /me/stored/:id/edit
+    edit(req, res, next) {
+        Course.findById(req.params.id)
+            .then((course) =>
+                res.render('me/edit', {
+                    course: mongooseToObject(course),
+                }),
+            )
+            .catch(next);
+    }
+    // GET /me/stored/:id/edit/video
+    editVideo(req, res, next) {
+        Course.findById(req.params.id)
+            .then((course) =>
+                res.render('me/editVideo', {
+                    course: mongooseToObject(course),
+                }),
+            )
+            .catch(next);
+    }
+
+    // PUT /me/stored/:id
+    storeVideo(req, res, next) {
+        // res.json(req.body)
+        req.body.image = `https://img.youtube.com/vi/${req.body.videoID}/sddefault.jpg`;
+        const video = new Video(req.body);
+        video
+            .save()
+            .then(() => res.redirect('/me/stored/' + req.params.id + '/edit'))
             .catch(next);
     }
 }
