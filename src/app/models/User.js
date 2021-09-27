@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema(
         },
         khoahoc: [
             {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose.Schema.Types.Number,
                 ref: 'Course',
             },
         ],

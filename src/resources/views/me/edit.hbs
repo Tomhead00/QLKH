@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            {{#each courses}}
+            {{#each course.video}}
             <div class="col-sm-3 col-lg-3 card-deck mt-4">
                 <div class="card card-course-item">
                     <a href="/courses/{{this.slug}}">
@@ -59,6 +59,9 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var cancelForm = $(".btn.btn-danger.cancel.float-right");
+        var time = $(".time").map(function() {
+            $(this).text(moment($(this).text()).fromNow());
+        }).get();
 
         // Btn cancel
         cancelForm.click(function() {

@@ -11,7 +11,6 @@
     <div class="mt-4">
         <div class="row">
             <h3 class="mb-0 col-sm-4"><b>Các khóa học đã tham gia:</b></h3>
-            <a class="col-sm-8 text-right" href="#">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
         </div>
         <div class="row">
             {{#each courses}}
@@ -26,10 +25,10 @@
                             <h5 class="card-title">{{this.name}}</h5>
                         </a>
                         <p class="card-text">{{this.mieuta}}</p>
-                        <p><img src="{{this.image}}" alt="" class="user-avatar"><b>{{this.user}}</b></p>
+                        <p><img src="{{this.actor.image}}" alt="" class="user-avatar"><b>{{this.actor.username}}</b></p>
                         <div class="card-footer d-flex">
                             <small class="text-muted time">{{this.updatedAt}}</small>
-                            <small class="text-muted ml-auto"><i class="fas fa-users"></i> 1000</small>
+                            <small class="text-muted ml-auto"><i class="fas fa-users"></i> 100</small>
                         </div>
                     </div>
                 </div>
@@ -41,11 +40,11 @@
 
     <div class="mt-4">
         <div class="row">
-            <h3 class="mb-0 col-sm-4"><b>Các khóa học nổi bật:</b></h3>
+            <h3 class="mb-0 col-sm-4"><b>Các khóa học vừa cập nhật:</b></h3>
             <a class="col-sm-8 text-right" href="#">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
         </div>
         <div class="row">
-            {{#each courses}}
+            {{#each courses1}}
             <div class="col-sm-3 col-lg-3 card-deck mt-4">
                 <div class="card card-course-item">
                     <a href="/courses/{{this.slug}}">
@@ -57,7 +56,7 @@
                                 <h5 class="card-title">{{this.name}}</h5>
                             </a>
                         <p class="card-text">{{this.mieuta}}</p>
-                        <p><img src="https://source.unsplash.com/random/306x230" alt="" class="user-avatar"><b>xxx</b></p>
+                        <p><img src={{this.actor.image}} alt="" class="user-avatar"><b>{{this.actor.username}}</b></p>
                         <div class="card-footer d-flex">
                             <small class="text-muted time">{{this.updatedAt}}</small>
                             <small class="text-muted ml-auto"><i class="fas fa-users"></i> 1000</small>
@@ -100,11 +99,101 @@
     </div>
 </div>
 
+{{!-- Modal ques join courses --}}
+<div id="ques-course-model" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tham gia khóa học?</h5>
+        <button type="button" class="close close-ques" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn chưa tham gia khóa học này. Bạn có muốn tham gia?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-ques" data-dismiss="modal">Hủy</button>
+        <button id="btn-thamgia-course" type="button" class="btn btn-danger">Tham gia</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form method="POST" name="join-course-form"></form>
+
 <script>
   document.addEventListener("DOMContentLoaded", function() {
+    var card = $(".card.card-course-item");
+    var closeQues = $(".close-ques");
+    var btnThamgia = $("#btn-thamgia-course");
+    var joinCourseForm = document.forms['join-course-form'];
+    
+    // format time
     var time = $(".time").map(function() {
         $(this).text(moment($(this).text()).fromNow());
     }).get();
 
+    // check tham gia khoa hoc
+    card.on("click", function (e) {
+        e.preventDefault();
+        var link = $(this).children("a").attr('href');
+        // console.log($(this).children("a").attr('href'));
+        var slugCourse = link.substring(link.lastIndexOf("/")+1, link.length);
+        // console.log(course);
+
+        $.ajax({
+            url: '/courses/checkThamgia',
+            type: 'POST',
+            data: {
+                slug: slugCourse
+            }
+        }).done(function(ketqua) {
+            console.log(ketqua);
+            if (ketqua == 0) {
+                $("#ques-course-model").modal("show");
+                btnThamgia.on('click', function thamGia() {
+                    joinCourseForm.action = "/courses/thamGia/" + slugCourse;
+                    joinCourseForm.submit();
+                })
+            }
+            else {
+                window.location.href = link;
+            }
+        });
+    })
+    // get number join courses
+    $(function() {
+        $.each(card, function(index, value) {
+            // console.log(value);
+
+            var link = $(value).children("a").attr('href');
+            // console.log(link);
+            var slugCourse = link.substring(link.lastIndexOf("/")+1, link.length);
+            // console.log(slugCourse);
+
+            $.ajax({
+                url: '/courses/getNumUser',
+                type: 'POST',
+                data: {
+                    slug: slugCourse
+                }
+            }).done(function(ketqua) {
+                // console.log(ketqua);
+                var numUser = $(value).find(".text-muted.ml-auto").html("<i class='fas fa-users'></i> " +  ketqua);
+                // console.log(numUser.text());
+            });
+        })
+    })
+
+    // button tham gia
+    btnThamgia.on('click', function thamGia(link) {
+        window.location.href = "course/";
+    })
+
+    // close modal ques
+    closeQues.on("click", function() {
+        $("#ques-course-model").modal("hide");
+    }) 
   })
 </script>

@@ -12,15 +12,13 @@ const Course = new Schema(
         mieuta: { type: String, default: '' },
         image: { type: String, default: '' },
         slug: { type: String, slug: 'name', unique: true },
-        dangky: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-            },
-        ],
+        actor: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user',
+        },
         video: [
             {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose.Schema.Types.Number,
                 ref: 'Video',
             },
         ],
