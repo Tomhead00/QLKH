@@ -5,6 +5,10 @@ const courseController = require('../app/controllers/CourseController');
 router.get('/', courseController.course);
 router.post('/store', courseController.store);
 router.post('/handle-form-actions', courseController.handleFormActions);
+router.post(
+    '/handle-form-actions-trash',
+    courseController.handleFormTrashActions,
+);
 router.post('/checkThamgia', courseController.checkThamgia);
 router.post('/thamGia/:slug', courseController.thamGia);
 router.put('/:id', courseController.update);

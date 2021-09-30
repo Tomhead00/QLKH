@@ -10,7 +10,7 @@ var image = null;
 class MeController {
     // GET /me/stored/Courses
     storeCourses(req, res, next) {
-        let courseQuery = Course.find({});
+        let courseQuery = Course.find({ actor: req.session.passport.user._id });
 
         if (req.query.hasOwnProperty('_sort')) {
             courseQuery = courseQuery.sort({
@@ -30,14 +30,24 @@ class MeController {
     }
     // GET /me/trash/Courses
     trashCourses(req, res, next) {
-        Course.findDeleted({})
-            .then((courses) =>
+        let courseQuery = Course.findDeleted({
+            actor: req.session.passport.user._id,
+        });
+
+        if (req.query.hasOwnProperty('_sort')) {
+            courseQuery = courseQuery.sort({
+                [req.query.column]: req.query.type,
+            });
+        }
+
+        Promise.all([courseQuery, Course.countDocumentsDeleted()]).then(
+            ([courses, deletedCount]) =>
                 res.render('me/trash-courses', {
                     username: req.session.passport,
+                    deletedCount,
                     courses: multipleMongooseToObject(courses),
                 }),
-            )
-            .catch(next);
+        );
     }
 
     // GET /me/stored/:id/edit
