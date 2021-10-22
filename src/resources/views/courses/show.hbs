@@ -1,35 +1,262 @@
-<div class="mt-3">
+<div class="mt-3 ml-4 mr-4">
     <div class="row">
-        <div class="col-lg-8 pl-4">
-            <iframe width="100%" height="720vh" src="https://www.youtube.com/embed/tUQ1i9dVfaE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="col-xl-8">
+            {{!-- <iframe id="embed" width="100%" height="720vh" src="https://www.youtube.com/embed/" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> --}}
+            <div id="player"></div>
+            <div class="mt-2" style="color: black;">
+                <h3><b class="title">N/A</b></h3>
+                <p class="description">N/A</p>
+            </div>
+            <div class="row">
+                <div class="page-header">
+                    <h4><small class="pull-right mb-4">N/A comments</small> Bình luận </h4>
+                </div> 
+                <div class="comments-list">
+                    <div class="media">
+                        <img class="align-self-center mr-3" src="http://lorempixel.com/40/40/people/1/" alt="">
+                        <div class="media-body">
+                            <h5 class="mt-0"><b>Center-aligned media</b> <small>N/A days ago</small></h5>
+                            <p class="mb-0">Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <div class="col-lg-4 listVideo">
+        <div class="col-xl-4">
             <div class="list-group">
                 <div class="list-group-item list-group-item-dark" aria-current="true">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1"><b>{{course.name}}</b></h5>
+                        <h4 class="mb-1"><b>{{course.name}}</b></h4>
                     </div>
                     <p class="mb-1">
                         <p class="mb-1">{{course.mieuta}}</p>
                     </p>
                 </div>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <div class="row">
-                        <div class="col-4 text-center">
-                            <img src="https://source.unsplash.com/random/130x130" alt="{{this.image}}">
-                        </div>
-                        <div class="col-8 pl-0">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1 text2line"><b>List group item heading asgdfalsdfjgwqoieruwgetqowpeorphS adasdasd asdsa sasd </b></h5>
+                <div class="list-group-item list-group-item-action">
+                    {{#each course.video}}
+                        <div class="row pb-3 pt-1 course lockCourse">
+                            <div class="col-sm-1 imgCenter status text-center">
+                                <i class="fas fa-lock"></i>
                             </div>
-                            <p class="mb-1 text2line">
-                                akjsldfhalskjdfagsjlkdfgaksjdfgaskjdfgalsjdkfasgdfasdkfjagsdalsjkdfagsldkjfagsdafjlksdglasdas asdasd asdasd
-                            </p>
-                            <small class="text-muted">3 days ago</small>
+                            <div class="col-sm-3 imgCenter">
+                                <img src="http://img.youtube.com/vi/{{this.videoID}}/default.jpg" alt="{{this.image}}" class="img-responsive center-block d-block mx-auto">
+                            </div>
+                            <div class="col-sm-8 pl-0">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1 text2line"><b>{{this.name}}</b></h5>
+                                </div>
+                                <p class="mb-0 text2line">
+                                    {{this.mieuta}}
+                                </p>
+                                <small class="text-muted time">{{this.updatedAt}}</small>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    {{else}}
+                        <div class="row mt-3 mb-3">
+                            <h5 class="mb-0 text-center">Không có video nào cho khóa học này!</h5>
+                            <a href="javascript:history.back()" class="mb-0 text-center"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                        </div>
+                    {{/each}}
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+{{!-- md5 --}}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>
+{{!-- moment --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+<script>
+    var videoPlaying = 0;
+    // var status = false;
+    // 2. This code loads the IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // 3. This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    var player;
+    function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+        height: '720',
+        width: '100%',
+        videoId: '',
+        playerVars: {
+        'playsinline': 1
+        },
+        events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+        }
+    });
+    }
+        // 4. The API will call this function when the video player is ready.
+    function onPlayerReady(event) {
+        event.target.playVideo();
+        // status = true;
+        unlockFirstVideo();
+
+    }
+
+    // 5. The API calls this function when the player's state changes.
+    //    The function indicates that when playing a video (state=1),
+    //    the player should play for six seconds and then stop.
+    var done = false;
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.ENDED && !done) {
+            nextVideo()
+        }
+    }
+
+
+
+
+    // document.addEventListener("DOMContentLoaded", function () {
+        var cancelForm = $(".btn.btn-danger.cancel.float-right");
+        // change videoID embed
+        var selectList = $(".course");
+        var embed = $("#embed");
+
+        // Xai moment change time
+        var time = $(".time").map(function() {
+            $(this).text(moment($(this).text()).fromNow());
+        }).get();
+
+        // change videoID embed
+        // console.log(selectList);
+        selectList.on("click", function() {
+            // console.log($(this).hasClass("lockCourse"));
+            if ($(this).hasClass("lockCourse")) return true;
+            else {
+                // chut css cho the ko bi khoa
+                var link = $(this).find("img").attr("src");
+                // console.log(link);
+                var videoID = link.substring(link.indexOf("vi/")+3, link.indexOf("vi/")+14)
+                // console.log(videoID);
+                selectList.find(".fas").removeClass("fa-play").attr("style",false);
+                selectList.attr("style",false);
+                $(this).find(".fas").addClass("fa-play").attr("style","color: #8a038c");
+                $(this).attr("style","background-color: hsl(240, 0%, 75%)");
+                player.loadVideoById({'videoId': videoID});
+                var title = $(this).find(".mb-1.text2line").text();
+                var description = $(this).find(".mb-0.text2line").text();
+                $(".title").text(title);
+                $(".description").text(description);
+
+                var i = selectList.index($(this));
+                videoPlaying = i;
+                // console.log(videoPlaying);
+            }
+        })
+
+        // Unlock video
+        function unlockVideo(i) {
+            $(selectList[i]).removeClass("lockCourse");
+            $(selectList[i]).addClass("readyCourse");
+            $(selectList[i]).find(".fa-lock").removeClass("fa-lock");
+        }
+
+        // lock course
+        function checkUnlockCourse(i) {
+            // console.log($(selectList[i]))
+            var link = $(selectList[i]).find("img").attr("src");
+            // console.log(link);
+            var videoID = link.substring(link.indexOf("vi/")+3, link.indexOf("vi/")+14)
+            // console.log(videoID);
+
+            $.ajax({
+                url: '/courses/checkUnlock',
+                type: 'POST',
+                data: {
+                    videoID: videoID,
+                }
+            }).done(function(ketqua) {
+                // console.log(ketqua);
+                // console.log($(selectList).length);
+                if (ketqua == "true") {
+                    unlockVideo(i);
+                }
+                if(i < $(selectList).length-1) {
+                    checkUnlockCourse(i+1);
+                }
+                if (i == $(selectList).length-1) {
+                    // console.log(i);
+                    runLastVideoUnlock();
+                }
+            });
+        };
+
+        // unlock first video
+        function unlockFirstVideo() {
+            var link = $(selectList[0]).find("img").attr("src");
+            var videoID = link.substring(link.indexOf("vi/")+3, link.indexOf("vi/")+14)
+            // console.log(videoID);
+            var a = $.ajax({
+                url: '/courses/unlockVideo',
+                type: 'POST',
+                data: {
+                    videoID: videoID,
+                }
+            })
+            $.when(a).done(function() {
+                checkUnlockCourse(0);
+            });
+
+        };
+
+        // run last video unlock
+        function runLastVideoUnlock() {
+            // console.log(selectList);
+            for(var i = selectList.length-1; i >= 0; i--) {
+                // console.log($(selectList[i]));
+                // console.log($(selectList[i]).hasClass("lockCourse"));
+                if($(selectList[i]).hasClass("lockCourse")) {
+                    continue;
+                } else {
+                    /* myVar = setInterval(function() { 
+                        // console.log(status);
+                        if (status == "true") {
+                            $(selectList[i]).click();
+                            clearTimeout(myVar);
+                        }
+                    }, 200) */
+                    $(selectList[i]).click();
+                    break;
+                }
+            }
+        }
+        
+        function nextVideo() {
+            // console.log($(selectList[videoPlaying+1]).hasClass("lockCourse"));
+            if($(selectList[videoPlaying+1]).hasClass("lockCourse")) return;
+            else {
+                $(selectList[videoPlaying+1]).click();
+            }
+        }
+
+        function autoCheckUnlock() {
+            // var i = 0;
+            myVar = setInterval(function() { 
+                console.log(player.getDuration());
+                console.log(player.getCurrentTime());
+                /* if (i == 100) {
+                    clearTimeout(myVar);
+                }
+                i++; */
+            }, 2000)
+        }
+        
+        // run auto when load page
+        // unlockFirstVideo();
+        // autoCheckUnlock();
+    // })
+</script>

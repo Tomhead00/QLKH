@@ -74,6 +74,7 @@
     -webkit-line-clamp: 2; /* number of lines to show */
     -webkit-box-orient: vertical;
 }
+
 // account
 body {
     width: 100%;
@@ -331,51 +332,6 @@ table.table td i {
     margin-top: 6px;
     font-size: 95%;
 }
-// search
-.searchbar {
-    margin-bottom: auto;
-    margin-top: auto;
-    height: 60px;
-    background-color: #353b48;
-    border-radius: 30px;
-    padding: 10px;
-}
-
-.search_input {
-    color: white;
-    border: 0;
-    outline: 0;
-    background: none;
-    width: 0;
-    caret-color: transparent;
-    line-height: 40px;
-    transition: width 0.4s linear;
-}
-
-.searchbar:hover > .search_input {
-    padding: 0 10px;
-    width: 450px;
-    caret-color: red;
-    transition: width 0.4s linear;
-}
-
-.searchbar:hover > .search_icon {
-    background: white;
-    color: #e74c3c;
-}
-
-.search_icon {
-    height: 40px;
-    width: 40px;
-    float: right;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    color: white;
-    text-decoration: none;
-}
-
 // custom
 .app {
     min-height: 100vh;
@@ -418,8 +374,34 @@ table.table td i {
 a:hover {
     text-decoration: none;
 }
+// comment list
+.user_name {
+    font-size: 14px;
+    font-weight: bold;
+}
+.comments-list .media {
+    border-bottom: 1px dotted #ccc;
+}
 
-.listVideo {
-    padding-left: 50px;
-    padding-right: 70px;
+// show video
+.imgCenter {
+    margin: auto;
+    display: block;
+}
+
+.readyCourse:hover {
+    cursor: pointer;
+    background-color: hsl(240, 0%, 90%);
+}
+
+.course {
+    color: black;
+}
+
+.lockCourse {
+    color: gray;
+}
+
+.playingVideo {
+    background-color: gray;
 }

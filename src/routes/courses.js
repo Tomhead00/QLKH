@@ -18,4 +18,8 @@ router.delete('/:id/force', courseController.forceDelete);
 router.get('/:slug', courseController.show);
 router.post('/getNumUser', courseController.getNumUser);
 
+// AJAX show video
+router.post('/checkUnlock', courseController.checkUnlock);
+router.post('/unlockVideo', courseController.unlockVideo);
+
 module.exports = router;

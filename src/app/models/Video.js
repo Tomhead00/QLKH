@@ -13,6 +13,12 @@ const Video = new Schema(
         image: { type: String, default: '' },
         slug: { type: String, slug: 'name', unique: true },
         videoID: { type: String, default: '' },
+        unlock: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
     {
         _id: false,

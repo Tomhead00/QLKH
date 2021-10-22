@@ -1,7 +1,8 @@
 <div class="container">
-  <form name="container-form" method="POST" class="mt-4" action="/courses/handle-form-actions-trash">
+  <form name="container-form" method="POST" class="mt-4" action="/me/trash/{{idCourse}}/handle-form-actions-trash">
       <div>
-        <h3>Khóa học đã xóa</h3>
+        <h3><b>Video đã xóa</b></h3>
+        <h4 class="ml-3">Khóa học: {{nameCourse}}</h4>
 
       <div class="mt-4 mb-2 d-flex align-items-center">
         <div class="form-check">
@@ -12,11 +13,12 @@
         </div>
         <select class="form-control form-control-sm checkbox-select-all-options" name="action" required>
           <option value="">-- Hành động --</option>
-          <option value="delete">Xóa vĩnh viễn</option>
+          <option value="deletes">Xóa vĩnh viễn</option>
           <option value="restores">Khôi phục</option>
         </select>
         <button class="btn btn-primary btn-sm check-all-submit-btn" disabled>Thực hiện</button>
-        <a href="/me/stored/courses" class="btn btn-primary btn-sm ml-auto mr-2" title="Danh sách khóa học"><i class="fas fa-undo"></i>  Danh sách khóa học</a>
+        <a href="/me/stored/courses" class="btn btn-secondary btn-sm ml-auto mr-2" title="Danh sách khóa học"><i class="fas fa-list-ul"></i>  Danh sách khóa học</a>
+        <a href="/me/stored/{{idCourse}}/edit" class="btn btn-primary btn-sm" title="Danh sách khóa học"><i class="fas fa-undo"></i>   Quay lại</a>
       </div>
     </div>
 
@@ -24,18 +26,18 @@
             <tr>
                 <th></th>
                 <th scope="col">STT</th>
-                <th scope="col">Tên khóa học {{{sortable 'name' _sort}}}</th>
-                <th scope="col">Miêu tả khóa học {{{sortable 'mieuta' _sort}}}</th>
+                <th scope="col">video {{{sortable 'name' _sort}}}</th>
+                <th scope="col">Miêu tả video {{{sortable 'mieuta' _sort}}}</th>
                 <th scope="col">Thời gian tạo  {{{sortable 'createdAt' _sort}}}</th>
                 <th scope="col">Thời gian cập nhật  {{{sortable 'updatedAt' _sort}}}</th>
             </tr>
           </thead>
           <tbody>
-              {{#each courses}}
+              {{#each videos}}
               <tr>
                 <td>
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="courseIds[]" value="{{this._id}}">
+                    <input class="form-check-input" type="checkbox" name="videoIDs[]" value="{{this._id}}">
                   </div>
                 </td>
                 <th scope="row">{{sum @index 1}}</th>
@@ -51,7 +53,7 @@
               {{else}}
               <tr>
                 <td colspan="7" class="text-center">
-                  Thùng rác trống! <a href="/me/stored/courses">Danh sách khóa học</a>
+                  Thùng rác trống! <a href="/me/stored/{{idCourse}}/edit">Tùy chỉnh khóa học</a>
                 </td>
               </tr>
               {{/each}}
@@ -66,13 +68,13 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Xóa khóa học?</h5>
+          <h5 class="modal-title">Xóa video này?</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <p>Hành động này không thể khôi phục. Bạn vẫn muốn xóa khóa học này?</p>
+          <p>Hành động này không thể khôi phục. Bạn vẫn muốn xóa video này?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
@@ -87,7 +89,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Xóa khóa học?</h5>
+        <h5 class="modal-title">Xóa video này?</h5>
         <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -111,14 +113,14 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        var courseId;
+        var videoId;
         var deleteForm = document.forms['delete-course-form']
         var restoreForm = document.forms['restore-course-form']
         var btnDeleteCourse =  document.getElementById('btn-delete-course');
         var restoreBtn = $(".btn-restore");
         // check all
         var checkboxAll = $('#checkbox-all');
-        var courseItemCheckbox = $('input[name="courseIds[]"]')
+        var courseItemCheckbox = $('input[name="videoIDs[]"]')
         var checkAllSubmitBtn = $('.check-all-submit-btn')
         var containerForm = $('form[name="container-form"]')
         // xoa toan bo khoa hoc
@@ -128,19 +130,18 @@
 
         $('#delete-course-model').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
-            courseId = button.data('id')
+            videoId = button.data('id')
         })
         // when btn clicked!
         btnDeleteCourse.onclick = function () {
-          deleteForm.action = '/courses/' + courseId + '/force?_method=DELETE'
+          deleteForm.action = '/me/trash/{{idCourse}}/delete/' + videoId + '/force?_method=DELETE'
           deleteForm.submit();
         }
         //restore btn click
         restoreBtn.click(function (e) {
           e.preventDefault();
-
-          var courseId = $(this).data('id');
-          restoreForm.action = '/courses/' + courseId + '/restore?_method=PATCH'
+          var videoId = $(this).data('id');
+          restoreForm.action = '/me/trash/{{idCourse}}/restore/' + videoId + '?_method=PATCH' 
           restoreForm.submit();
         });
 
@@ -153,14 +154,14 @@
 
         // Course item checked
         courseItemCheckbox.change(function () {
-          var isCheckedAll = courseItemCheckbox.length === $('input[name="courseIds[]"]:checked').length
+          var isCheckedAll = courseItemCheckbox.length === $('input[name="videoIDs[]"]:checked').length
           checkboxAll.prop('checked', isCheckedAll);
           renderCheckAllSubmitBtn();
         });
 
         // Re-render check submit all button
         function renderCheckAllSubmitBtn() {
-          var checkedCount = $('input[name="courseIds[]"]:checked').length;
+          var checkedCount = $('input[name="videoIDs[]"]:checked').length;
           if(checkedCount > 0) {
             checkAllSubmitBtn.attr('disabled', false);
           } else {
@@ -180,7 +181,7 @@
             var myAction;
             e.preventDefault();
             switch (action.val()) {
-              case ('delete'):
+              case ('deletes'):
                 myAction = "xóa"; break;
               case ('restores'):
                 myAction = "khôi phục"; break;  

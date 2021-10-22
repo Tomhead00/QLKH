@@ -1,10 +1,13 @@
 <div class="container">
-    <div class="row">
-        <div class="d-flex justify-content-end mt-4">
-            <div class="searchbar">
-            <input class="search_input" type="text" name="" placeholder="Search...">
-            <a href="#" class="search_icon"><i class="fas fa-search"></i></a>
+    <div class="row mt-4">
+        <div class="input-group d-flex justify-content-end">
+            <div class="form-outline">
+                <input id="search-input" type="search" id="form1" class="form-control" style="width: 300px;" />
+                <label class="form-label" for="form1">Search</label>
             </div>
+            <button id="search-button" type="button" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
     </div>
 
@@ -240,6 +243,13 @@
     // close modal ques
     closeQues.on("click", function() {
         $("#ques-course-model").modal("hide");
-    }) 
+    })
+    // search
+    const searchButton = document.getElementById('search-button');
+    const searchInput = document.getElementById('search-input');
+    searchButton.addEventListener('click', () => {
+        const inputValue = searchInput.value;
+        alert(inputValue);
+    });
   })
 </script>

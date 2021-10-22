@@ -76,7 +76,9 @@ class CourseController {
     // GET /courses/:slug
     show(req, res, next) {
         Course.findOne({ slug: req.params.slug })
+            .populate('video')
             .then((course) => {
+                // res.json(course);
                 res.render('courses/show', {
                     course: mongooseToObject(course),
                     username: req.session.passport,
@@ -150,6 +152,15 @@ class CourseController {
             { new: true, useFindAndModify: false },
         ).catch(next);
 
+        Course.findOneDeleted({ _id: req.params.id })
+            .then((course) => {
+                // console.log(course.video);
+                for (const _id of course.video) {
+                    Video.deleteOne({ _id: _id }).catch(next);
+                }
+            })
+            .catch(next);
+
         Course.deleteOne({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
@@ -178,6 +189,15 @@ class CourseController {
                         { $pull: { khoahoc: _id } },
                         { new: true, useFindAndModify: false },
                     ).catch(next);
+
+                    Course.findOneDeleted({ _id: _id })
+                        .then((course) => {
+                            // console.log(course.video);
+                            for (const _id of course.video) {
+                                Video.deleteOne({ _id: _id }).catch(next);
+                            }
+                        })
+                        .catch(next);
 
                     Course.deleteOne({ _id: _id }).catch(next);
                 }
@@ -236,6 +256,54 @@ class CourseController {
                 res.send(count.toString());
             });
         });
+    }
+
+    // POST /checkUnlock <AJAX>
+    checkUnlock(req, res, next) {
+        // res.send(req.body.videoID);
+        Video.findOne(
+            {
+                videoID: req.body.videoID,
+                unlock: req.session.passport.user._id,
+            },
+            function (err, doc) {
+                if (doc === null) {
+                    res.send('false');
+                    return false; // this will return undefined to the controller
+                } else {
+                    res.send('true');
+                    return true; // this will return undefined to the controller
+                }
+            },
+        );
+    }
+
+    // POST /unlockFirstVideo <AJAX>
+    unlockVideo(req, res, next) {
+        // res.send(req.body.videoID);
+        Video.findOne(
+            {
+                videoID: req.body.videoID,
+                unlock: req.session.passport.user._id,
+            },
+            function (err, doc) {
+                if (doc === null) {
+                    Video.updateOne(
+                        { videoID: req.body.videoID },
+                        { $push: { unlock: req.session.passport.user._id } },
+                    )
+                        .then((video) => {
+                            res.send('true');
+                        })
+                        .catch(next);
+                    res.send('false');
+                    return false;
+                } else {
+                    res.send('true');
+                    return true;
+                }
+            },
+        );
     }
 }
 
