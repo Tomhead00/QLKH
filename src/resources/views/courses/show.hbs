@@ -5,21 +5,41 @@
             <div id="player"></div>
             <div class="mt-2" style="color: black;">
                 <h3><b class="title">N/A</b></h3>
-                <p class="description">N/A</p>
+                <p class="description mb-4">N/A</p>
             </div>
             <div class="row">
                 <div class="page-header">
-                    <h4><small class="pull-right mb-4">N/A comments</small> Bình luận </h4>
-                </div> 
-                <div class="comments-list">
-                    <div class="media">
-                        <img class="align-self-center mr-3" src="http://lorempixel.com/40/40/people/1/" alt="">
-                        <div class="media-body">
-                            <h5 class="mt-0"><b>Center-aligned media</b> <small>N/A days ago</small></h5>
-                            <p class="mb-0">Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                    <h4><small id="totalComment" class="pull-right mb-4">N/A comments</small> <b>Bình luận</b> </h4>
+                </div>
+
+                <form class="border-0" style="background-color: #f8f9fa;">
+                    <div class="d-flex flex-start w-100">
+                        <img
+                            class="rounded-circle shadow-1-strong me-3"
+                            src="{{username.user.image}}"
+                            alt="avatar"
+                            width="40"
+                            height="40"
+                        />
+                        <div class="form-outline w-100">
+                            <textarea
+                            class="form-control"
+                            id="textAreaExample"
+                            rows="3"
+                            style="background: #fff;"
+                            required></textarea>
+                            <label class="form-label" for="textAreaExample">Message</label>
                         </div>
                     </div>
-                </div>
+                    <div class="float-end mt-2 pt-1">
+                        <button type="submit" class="btn btn-primary btn-sm">Post comment</button>
+                        <button type="reset" class="btn btn-outline-primary btn-sm">Cancel</button>
+                    </div>
+                </form>
+
+                <div class="comments-list" id="comments-list"></div>
+
+                <div class="mb-5 pb-5"></div>
             </div>
 
         </div>
@@ -66,15 +86,13 @@
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-{{!-- md5 --}}
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>
 {{!-- moment --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script>
     var videoPlaying = 0;
-    // var status = false;
+    var firstLoading = true;
     // 2. This code loads the IFrame Player API code asynchronously.
     var tag = document.createElement('script');
 
@@ -103,7 +121,7 @@
     function onPlayerReady(event) {
         event.target.playVideo();
         // status = true;
-        unlockFirstVideo();
+        unlockVideoServer(0);
 
     }
 
@@ -113,7 +131,7 @@
     var done = false;
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.ENDED && !done) {
-            nextVideo()
+            nextVideo();
         }
     }
 
@@ -127,9 +145,18 @@
         var embed = $("#embed");
 
         // Xai moment change time
-        var time = $(".time").map(function() {
-            $(this).text(moment($(this).text()).fromNow());
-        }).get();
+        function updateTime() {
+            $(".time").map(function() {
+                // console.log($(this).text());
+                $(this).text(moment($(this).text()).fromNow());
+            }).get();
+        }
+        function updateTimeComments() {
+            $(".timeComments").map(function() {
+                // console.log($(this).text());
+                $(this).text(moment($(this).text()).fromNow());
+            }).get();
+        }
 
         // change videoID embed
         // console.log(selectList);
@@ -146,7 +173,7 @@
                 selectList.attr("style",false);
                 $(this).find(".fas").addClass("fa-play").attr("style","color: #8a038c");
                 $(this).attr("style","background-color: hsl(240, 0%, 75%)");
-                player.loadVideoById({'videoId': videoID});
+                player.cueVideoById({'videoId': videoID});
                 var title = $(this).find(".mb-1.text2line").text();
                 var description = $(this).find(".mb-0.text2line").text();
                 $(".title").text(title);
@@ -155,6 +182,8 @@
                 var i = selectList.index($(this));
                 videoPlaying = i;
                 // console.log(videoPlaying);
+
+                autoCheckUnlock();
             }
         })
 
@@ -188,16 +217,17 @@
                 if(i < $(selectList).length-1) {
                     checkUnlockCourse(i+1);
                 }
-                if (i == $(selectList).length-1) {
+                if (i == $(selectList).length-1 && firstLoading == true) {
                     // console.log(i);
                     runLastVideoUnlock();
+                    firstLoading = false;
                 }
             });
         };
 
         // unlock first video
-        function unlockFirstVideo() {
-            var link = $(selectList[0]).find("img").attr("src");
+        function unlockVideoServer(i) {
+            var link = $(selectList[i]).find("img").attr("src");
             var videoID = link.substring(link.indexOf("vi/")+3, link.indexOf("vi/")+14)
             // console.log(videoID);
             var a = $.ajax({
@@ -208,7 +238,7 @@
                 }
             })
             $.when(a).done(function() {
-                checkUnlockCourse(0);
+                checkUnlockCourse(i);
             });
 
         };
@@ -233,6 +263,8 @@
                     break;
                 }
             }
+            updateTime();
+            refreshComment();
         }
         
         function nextVideo() {
@@ -244,19 +276,88 @@
         }
 
         function autoCheckUnlock() {
-            // var i = 0;
             myVar = setInterval(function() { 
-                console.log(player.getDuration());
-                console.log(player.getCurrentTime());
-                /* if (i == 100) {
+                // console.log(player.getDuration());
+                // console.log(player.getCurrentTime());
+                var totalVideo = player.getDuration();
+                var currentVideo = player.getCurrentTime();
+                if (currentVideo >= (2/3)*totalVideo) {
+                    // console.log("right");
+                    if (videoPlaying != $(selectList).length-1) {
+                        unlockVideoServer(videoPlaying+1);
+                    }
                     clearTimeout(myVar);
                 }
-                i++; */
             }, 2000)
         }
         
         // run auto when load page
         // unlockFirstVideo();
-        // autoCheckUnlock();
     // })
+
+    // Comment
+    var btnSubComment = $(".btn.btn-primary.btn-sm");
+    var btnCancel = $(".btn.btn-outline-primary.btn-sm");
+    var textArea = $("#textAreaExample");
+    var courseID = "{{course._id}}";
+    var totalComment = $("#totalComment");
+    // console.log(courseID);
+
+    // list comment
+    var listComment = $("#comments-list");
+
+    function refreshComment() {
+        $.ajax({
+            url: '/courses/refreshComment',
+            type: 'POST',
+            data: {
+                course: courseID,
+            }
+        })
+        .done(function(ketqua) {
+            var allCommnet = "";
+            ketqua.forEach(element => {
+                // console.log(element);
+                var content = element.content;
+                var contentProcess = content.replace(/\n/g, "<br/>");
+                allCommnet += (`
+                    <div class='media'>
+                        <img class='align-self-center mr-3 rounded-circle shadow-1-strong me-3' src='` + element.actor.image + `' alt='' width="40" height="40">
+                        <div class='media-body mt-2 mb-2 pt-2 pb-2'>
+                            <h5 class='mt-0 mb-0'><b>`+ element.actor.username +`</b> <small class="timeComments">`+ element.createdAt +`</small></h5>
+                            <p class='mb-0'>`+ contentProcess +`</p>
+                        </div>
+                    </div>
+                `)
+            });
+            listComment.html(allCommnet);
+
+            // console.log(ketqua.length + " comments");
+            totalComment.text(ketqua.length + " comments");
+
+            updateTimeComments();
+        });
+    }
+
+    btnSubComment.on("click", function (e) {
+        // console.log(textArea.val());
+        content = textArea.val();
+        if (content != "") {
+            e.preventDefault();
+            $.ajax({
+                url: '/courses/addComment',
+                type: 'POST',
+                data: {
+                    content: content,
+                    course: courseID,
+                }
+            })
+            .done(function(ketqua) {
+                // console.log(ketqua);
+            });
+            btnCancel.click();
+            refreshComment();
+        }
+    })
+
 </script>

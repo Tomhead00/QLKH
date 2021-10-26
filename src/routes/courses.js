@@ -22,4 +22,8 @@ router.post('/getNumUser', courseController.getNumUser);
 router.post('/checkUnlock', courseController.checkUnlock);
 router.post('/unlockVideo', courseController.unlockVideo);
 
+// AJAX Comment
+router.post('/addComment', courseController.addComment);
+router.post('/refreshComment', courseController.refreshComment);
+
 module.exports = router;

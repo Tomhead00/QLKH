@@ -1,7 +1,11 @@
 <div class="container">
     <div class="row mt-4">
         <h3 class="mb-0 col-sm-4"><b>Video khóa học:</b></h3>
-        <a class="col-sm-8 text-right" href="/me/trash/{{course._id}}">Thùng rác ({{countDel}}) <i class="fas fa-angle-double-right"></i></a>
+        <div class="col-sm-8 d-flex justify-content-end ">
+            <a href="/courses/{{course.slug}}" class="btn btn-primary btn-sm text-end ml-1" title="Thùng rác"> Xem khóa học</a>
+            <a href="/me/trash/{{course._id}}" class="btn btn-primary btn-sm ml-1" title="Thùng rác"><i class="fas fa-trash-alt"></i> ({{countDel}})</a>
+            <a href="/me/stored/courses" class="btn btn-danger btn-sm ml-1" title="Thùng rác"><i class="fas fa-chevron-left"></i> Quay lại</a>
+        </div>
     </div>
     <div class="row">
         {{!-- add khóa học --}}
@@ -16,12 +20,12 @@
         {{#each course.video}}
         <div class="col-sm-3 col-lg-3 card-deck mt-4">
             <div class="card card-course-item fadeIn">
-                <a href="/courses/{{this.slug}}">
+                <a href="#">
                     <img class="card-img-top" src="{{this.image}}" alt="{{this.image}}">
                 </a>
 
                 <div class="card-body">
-                        <a href="/courses/{{this.slug}}">
+                        <a href="#">
                             <h5 class="card-title">{{this.name}}</h5>
                         </a>
                     <p class="card-text">{{this.mieuta}}</p>
@@ -52,8 +56,8 @@
                 <textarea type="text" class="form-control" id="mieuta" name="mieuta">{{course.mieuta}}</textarea>
             </div>
             <div>
-                <button type="submit" class="btn btn-primary float-right ml-2">Lưu lại</button>
-                <input type="button" class="btn btn-danger cancel float-right" value="Quay lại">
+                <button type="submit" class="btn btn-success float-right ml-2">Lưu lại</button>
+                {{!-- <input type="button" class="btn btn-danger cancel float-right" value="Quay lại"> --}}
             </div>
         </form>
     </div>
@@ -65,15 +69,15 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        var cancelForm = $(".btn.btn-danger.cancel.float-right");
+        // var cancelForm = $(".btn.btn-danger.cancel.float-right");
         var time = $(".time").map(function() {
             $(this).text(moment($(this).text()).fromNow());
         }).get();
 
-        // Btn cancel
+        /* Btn cancel
         cancelForm.click(function() {
             window.location.href = "/me/stored/courses";
-        })
+        })*/
         // bat khung card de chuyen huong
         $(".addVideo").on("click", function() {
             var link = $(this).children("a").attr("href");

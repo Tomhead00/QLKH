@@ -1,4 +1,5 @@
 const Course = require('../models/Course');
+const Comment = require('../models/Comment');
 const Video = require('../models/Video');
 const { mongooseToObject } = require('../../util/mongoose');
 const { multipleMongooseToObject } = require('../../util/mongoose');
@@ -86,6 +87,29 @@ class CourseController {
             })
             .catch(next);
         // res.send('Course Detail - ' + req.params.slug);
+    }
+    // POST /courses/addComment <AJAX>
+    addComment(req, res, next) {
+        // console.log(req.body);
+        const comment = new Comment(req.body);
+        comment.actor = req.session.passport.user._id;
+        comment
+            .save()
+            .then(() => {
+                res.send('true');
+            })
+            .catch(next);
+    }
+
+    // POST /courses/refreshComment <AJAX>
+    async refreshComment(req, res, next) {
+        // console.log(req.body);
+        await Comment.find({ course: req.body.course })
+            .sort({ createdAt: -1 })
+            .populate({ modal: 'user', path: 'actor' })
+            .then((comment) => {
+                res.send(comment);
+            });
     }
 
     // POST /courses/store
@@ -296,15 +320,13 @@ class CourseController {
                             res.send('true');
                         })
                         .catch(next);
+                    return true;
+                } else {
                     res.send('false');
                     return false;
-                } else {
-                    res.send('true');
-                    return true;
                 }
             },
         );
     }
 }
-
 module.exports = new CourseController();
