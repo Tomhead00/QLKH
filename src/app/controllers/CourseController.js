@@ -21,9 +21,78 @@ class CourseController {
 
         const courses = await Course.find({ _id: { $in: user.khoahoc } })
             .populate({ modal: 'user', path: 'actor' })
-            .sort({ updatedAt: -1 })
             .catch(next);
 
+        // Cac khoa hoc noi bat
+        var arr = [];
+        const trend = await Course.find({})
+            .populate({ modal: 'user', path: 'actor' })
+            .then(async (courses) => {
+                for (const course of courses) {
+                    const myCount = await User.where({
+                        khoahoc: course._id,
+                    }).countDocuments();
+                    arr.push({
+                        count: myCount,
+                        _id: course._id,
+                    });
+                }
+            });
+        arr.sort(function (a, b) {
+            return b.count - a.count;
+        });
+        var arrID = arr.map((item) => item._id);
+        // console.log(arr);
+        console.log(arrID);
+
+        const courseFA = await Course.find({ _id: { $in: arrID } })
+            .populate({ modal: 'user', path: 'actor' })
+            .limit(4)
+            .catch(next);
+
+        // Cac khoa vua cap nhat
+        const coursesNew = await Course.find({})
+            .populate({ modal: 'user', path: 'actor' })
+            .populate('video')
+            .sort({ updatedAt: -1 })
+            .limit(4);
+
+        // Cac khoa vua khac
+        const coursesAnother = await Course.find({
+            _id: { $nin: user.khoahoc },
+        })
+            .populate({ modal: 'user', path: 'actor' })
+            .populate('video')
+            .sort({ updatedAt: -1 })
+            .limit(4);
+        // res.json(course);
+        // res.json(courses1);
+        res.render('courses/courses', {
+            courses: multipleMongooseToObject(courses),
+            coursesNew: multipleMongooseToObject(coursesNew),
+            courseFA: multipleMongooseToObject(courseFA),
+            coursesAnother: multipleMongooseToObject(coursesAnother),
+            username: req.session.passport,
+        });
+    }
+
+    // Course option
+    // GET /course/courseNew
+    async courseNew(req, res, next) {
+        // Cac khoa vua cap nhat
+        const coursesNew = await Course.find({})
+            .populate({ modal: 'user', path: 'actor' })
+            .populate('video')
+            .sort({ updatedAt: -1 });
+
+        res.render('courses/coursesNew', {
+            coursesNew: multipleMongooseToObject(coursesNew),
+            username: req.session.passport,
+        });
+    }
+
+    // GET /course/coursePopular
+    async coursePopular(req, res, next) {
         // Cac khoa hoc noi bat
         var arr = [];
         const trend = await Course.find({})
@@ -48,27 +117,28 @@ class CourseController {
             .populate({ modal: 'user', path: 'actor' })
             .catch(next);
 
-        // Cac khoa vua cap nhat
-        const coursesNew = await Course.find({})
-            .populate({ modal: 'user', path: 'actor' })
-            .populate('video')
-            .sort({ updatedAt: -1 })
-            .limit(4);
+        res.render('courses/coursesPopular', {
+            courseFA: multipleMongooseToObject(courseFA),
+            username: req.session.passport,
+        });
+    }
 
+    // GET /course/courseAnother
+    async courseAnother(req, res, next) {
         // Cac khoa vua khac
+        const user = await User.findById({
+            _id: req.session.passport.user._id,
+        });
+
         const coursesAnother = await Course.find({
             _id: { $nin: user.khoahoc },
         })
             .populate({ modal: 'user', path: 'actor' })
             .populate('video')
-            .sort({ updatedAt: -1 })
-            .limit(4);
-        // res.json(course);
-        // res.json(courses1);
-        res.render('courses/courses', {
-            courses: multipleMongooseToObject(courses),
-            coursesNew: multipleMongooseToObject(coursesNew),
-            courseFA: multipleMongooseToObject(courseFA),
+            .sort({ updatedAt: -1 });
+
+        //res.json(coursesAnother);
+        res.render('courses/coursesAnother', {
             coursesAnother: multipleMongooseToObject(coursesAnother),
             username: req.session.passport,
         });
@@ -327,6 +397,20 @@ class CourseController {
                 }
             },
         );
+    }
+
+    // POST /search <AJAX>
+    search(req, res, next) {
+        // res.send(req.body.videoID);
+        if (req.body.name == '') {
+            res.send([]);
+        } else {
+            Course.find({ name: new RegExp(req.body.name, 'i') })
+                .populate({ modal: 'user', path: 'actor' })
+                .then((courses) => {
+                    res.send(courses);
+                });
+        }
     }
 }
 module.exports = new CourseController();

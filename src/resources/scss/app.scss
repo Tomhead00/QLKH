@@ -73,6 +73,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 2; /* number of lines to show */
     -webkit-box-orient: vertical;
+    min-height: 55px;
 }
 
 // account
@@ -332,6 +333,15 @@ table.table td i {
     margin-top: 6px;
     font-size: 95%;
 }
+// search
+#resultSearch {
+    position: absolute;
+    z-index: 2;
+    right: 0px;
+    min-width: 50%;
+    max-width: 500px;
+}
+
 // custom
 .app {
     min-height: 100vh;
@@ -356,6 +366,7 @@ table.table td i {
     display: -webkit-box;
     -webkit-line-clamp: 2; /* number of lines to show */
     -webkit-box-orient: vertical;
+    min-height: 50px;
 }
 
 .card-footer {

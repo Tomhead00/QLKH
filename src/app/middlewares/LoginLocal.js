@@ -8,11 +8,18 @@ module.exports = new LocalStrategy(
         passwordField: 'password',
     },
     function (email, password, done) {
-        User.findOne({ email: email }, function (err, user) {
+        User.findOne({ email: email }, async function (err, user) {
             if (err) {
+                // console.log("test");
                 return done(err);
             }
-            if (!user) {
+            if ((await User.countDocumentsDeleted({ email: email })) == 1) {
+                // console.log("test");
+                return done(null, false, {
+                    message: 'Tài khoản đã bị khóa!',
+                    reason: 'blocked',
+                });
+            } else if (!user) {
                 return done(null, false, {
                     message: 'Tài khoản không tồn tại!',
                 });

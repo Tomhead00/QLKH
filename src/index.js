@@ -23,6 +23,7 @@ const LoginFB = require('./app/middlewares/LoginFB');
 const LoginLocal = require('./app/middlewares/LoginLocal');
 const LoginGG = require('./app/middlewares/LoginGG');
 const CheckUser = require('./app/middlewares/CheckUser');
+const CheckRole = require('./app/middlewares/CheckRole');
 
 // connect to DB
 db.connect();
@@ -62,7 +63,11 @@ app.use(
 
 // Custom middleware
 app.use(SortMiddleware);
-// app.get('/courses/:slug', CheckUser);
+
+app.get('/courses', CheckUser);
+app.get('/me', CheckUser);
+app.get('/manager/:slug', CheckUser, CheckRole);
+app.get('/courses/:slug', CheckUser);
 
 // passport fb
 passport.use(LoginFB);
@@ -88,12 +93,16 @@ app.get(
 app.get('/auth/facebook/callback', function (req, res, next) {
     passport.authenticate('facebook', function (err, user, info) {
         if (err) {
-            return next(err);
+            next(err);
+            return res.redirect('/account');
         }
-        if (!user) {
+
+        if (!user || info.reason == 'blocked') {
+            // console.log(info.reason + "asd");
             return res.render('./user/account', { alert1: info.message });
         }
         req.logIn(user, function (err) {
+            // console.log(info.message + "Asw");
             if (err) {
                 return next(err);
             }
@@ -115,9 +124,10 @@ app.get(
 app.get('/auth/google/callback', function (req, res, next) {
     passport.authenticate('google', function (err, user, info) {
         if (err) {
-            return next(err);
+            next(err);
+            return res.redirect('/account');
         }
-        if (!user) {
+        if (!user || info.reason == 'blocked') {
             return res.render('./user/account', { alert1: info.message });
         }
         req.logIn(user, function (err) {
@@ -133,7 +143,8 @@ app.get('/auth/google/callback', function (req, res, next) {
 app.post('/account/login', function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
         if (err) {
-            return next(err);
+            next(err);
+            return res.redirect('/account');
         }
         if (!user) {
             return res.render('./user/account', {
@@ -171,6 +182,10 @@ app.engine(
     'hbs',
     exphbs({
         extname: '.hbs',
+        runtimeOptions: {
+            allowProtoPropertiesByDefault: true,
+            allowProtoMethodsByDefault: true,
+        },
         helpers: {
             sum: (a, b) => a + b,
             sortable: (field, sort) => {

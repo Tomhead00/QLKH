@@ -1,60 +1,55 @@
 <div class="container">
     <div class="container-xl">
+        <div class="row mt-3">
+            <h3 class="mb-0 col-sm-8"><b>Quản lý thành viên</b></h3>
+            <div class="col-sm-4 text-right">
+                <a href="/courses" class="btn btn-success btn-sm ml-auto mr-2" title="Quay lại khóa học"><i class="fas fa-play"></i> khóa học</a>
+                <a href="./blocked" class="btn btn-danger btn-sm" title="Thành viên bị khóa"><i class="fas fa-lock"></i> ({{accountBlock}})</a>
+            </div>
+        </div>
         <div class="table-responsive">
             <div class="table-wrapper">
                 <div class="table-title">
                     <div class="row">
-                        <div class="col-sm-8"><h2>Administrator <b>Details</b></h2></div>
-                        <div class="col-sm-4">
-                            <div class="search-box">
-                                <i class="material-icons">&#xE8B6;</i>
-                                <input type="text" class="form-control" placeholder="Search&hellip;">
-                            </div>
-                        </div>
+                        <h2><b>Administrator</b></h2>
+                        <p class="mb-0 mt-2"><b>Total:</b> <span class="totalAd">N/A</span>/5</p>
                     </div>
                 </div>
                 <table class="table table-striped table-hover table-bordered">
                     <thead>
-                        <tr>
+                        <tr class="text-center">
                             <th>#</th>
                             <th>Username</th>
                             <th>Email</th>
                             <th>Giới tính</th>
                             <th>SĐT</th>
                             <th>Địa chỉ</th>
-                            <th>Công cụ</th>
+                            <th width="145px">Công cụ</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#each accountAdmin}}
                         <tr>
-                            <td>1</td>
-                            <td>{{this.username}}</td>
+                            <td>{{sum @index 1}}</td>
+                            <td class="accountAd">
+                                <img src="{{this.image}}" alt="" class="user-avatar">
+                                <b>{{this.username}}</b>
+                            </td>
                             <td>{{this.email}}</td>
                             <td>{{this.GT}}</td>
                             <td>{{this.SDT}}</td>
                             <td>{{this.Address}}</td>
                             <td>
-                                <a href="#" class="view" title="Hủy quyền admin" data-toggle="tooltip"><i class="material-icons">arrow_downward</i></a>
-                                <a href="/account/edit/{{this._id}}" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                                <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                                <a href="#" class="view down" title="Hủy quyền admin" data-toggle="tooltip" data-id="{{this._id}}"><i class="fas fa-arrow-down"></i></a>
+                                <a href="/account/edit/{{this._id}}" class="edit" title="Sửa" data-toggle="tooltip"><i class="fas fa-user-edit"></i></a>
+                                <div data-toggle="modal" data-target="#block-user-model" data-id="{{this._id}}" style="display: inline;">
+                                    <a href="#" class="delete" title="Khóa" data-toggle="tooltip"><i class="fas fa-ban"></i></a>
+                                </div>
                             </td>
                         </tr>
                         {{/each}}    
                     </tbody>
                 </table>
-                <div class="clearfix">
-                    <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-                    <ul class="pagination">
-                        <li class="page-item disabled"><a href="#"><i class="fa fa-angle-double-left"></i></a></li>
-                        <li class="page-item"><a href="#" class="page-link">1</a></li>
-                        <li class="page-item"><a href="#" class="page-link">2</a></li>
-                        <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                        <li class="page-item"><a href="#" class="page-link">4</a></li>
-                        <li class="page-item"><a href="#" class="page-link">5</a></li>
-                        <li class="page-item"><a href="#" class="page-link"><i class="fa fa-angle-double-right"></i></a></li>
-                    </ul>
-                </div>
             </div>
         </div>  
     </div> 
@@ -64,68 +59,124 @@
             <div class="table-wrapper">
                 <div class="table-title">
                     <div class="row">
-                        <div class="col-sm-8"><h2>Administrator <b>Details</b></h2></div>
-                        <div class="col-sm-4">
-                            <div class="search-box">
-                                <i class="material-icons">&#xE8B6;</i>
-                                <input type="text" class="form-control" placeholder="Search&hellip;">
-                            </div>
-                        </div>
+                        <h2><b>Members</b></h2>
+                        <p class="mb-0 mt-2"><b>Total:</b> <span class="totalUser">N/A</span></p>
                     </div>
                 </div>
                 <table class="table table-striped table-hover table-bordered">
                     <thead>
-                        <tr>
+                        <tr class="text-center">
                             <th>#</th>
                             <th>Username</th>
                             <th>Email</th>
                             <th>Giới tính</th>
                             <th>SĐT</th>
                             <th>Địa chỉ</th>
-                            <th>Công cụ</th>
+                            <th width="145px">Công cụ</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#each accountUser}}
                         <tr>
-                            <td>1</td>
-                            <td>{{this.username}}</td>
+                            <td>{{sum @index 1}}</td>
+                            <td class="accountUser">
+                                <img src="{{this.image}}" alt="" class="user-avatar">
+                                <b>{{this.username}}</b>
+                            </td>
                             <td>{{this.email}}</td>
                             <td>{{this.GT}}</td>
                             <td>{{this.SDT}}</td>
                             <td>{{this.Address}}</td>
                             <td>
-                                <a href="#" class="view" title="Cấp quyền Admin" data-toggle="tooltip"><i class="material-icons">arrow_upward</i></a>
-                                <a href="/account/edit/{{this._id}}" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                                <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                                <a href="#" class="view up" title="Hủy quyền admin" data-toggle="tooltip" data-id="{{this._id}}"><i class="fas fa-arrow-up"></i></a>
+                                <a href="/account/edit/{{this._id}}" class="edit" title="Sửa" data-toggle="tooltip"><i class="fas fa-user-edit"></i></a>
+                                <div data-toggle="modal" data-target="#block-user-model" data-id="{{this._id}}" style="display: inline;">
+                                    <a href="#" class="delete" title="Khóa" data-toggle="tooltip"><i class="fas fa-ban"></i></a>
+                                </div>
                             </td>
                         </tr>
                         {{/each}}    
                     </tbody>
                 </table>
-                <div class="clearfix">
-                    <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-                    <ul class="pagination">
-                        <li class="page-item disabled"><a href="#"><i class="fa fa-angle-double-left"></i></a></li>
-                        <li class="page-item"><a href="#" class="page-link">1</a></li>
-                        <li class="page-item"><a href="#" class="page-link">2</a></li>
-                        <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                        <li class="page-item"><a href="#" class="page-link">4</a></li>
-                        <li class="page-item"><a href="#" class="page-link">5</a></li>
-                        <li class="page-item"><a href="#" class="page-link"><i class="fa fa-angle-double-right"></i></a></li>
-                    </ul>
-                </div>
             </div>
         </div>  
     </div> 
 </div>
 
+{{!-- Delete hidden form --}}
+<form method="POST" name="block-user-form"></form>
+<form method="POST" name="down-user-form"></form>
+<form method="POST" name="up-user-form"></form>
+
+
+{{!-- Modal ques join courses --}}
+<div id="block-user-model" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Khóa tài khoản này?</h5>
+        <button type="button" class="close close-ques" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn khóa tài khoản này?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-ques" data-dismiss="modal">Hủy</button>
+        <button id="btn-block-user" type="button" class="btn btn-danger">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {{!-- script --}}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // zone khai bao cac kieu
+    // block user
+    var btnBlockUser = $("#btn-block-user");
+    var blockForm = document.forms['block-user-form']
+    var upForm = document.forms['up-user-form']
+    var downForm = document.forms['down-user-form']
+
+
+    // code
     $(document).ready(function(){
 	    $('[data-toggle="tooltip"]').tooltip();
     });
+    
+    // Count Ad, member
+    // console.log($.find(".accountAd"));
+    $(".totalAd").text($.find(".accountAd").length);
+    // console.log($.find(".accountUser"));
+    $(".totalUser").text($.find(".accountUser").length);
+
+    // block User
+    $('#block-user-model').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        UserID = button.data('id')
+        console.log(UserID);
+    })
+    btnBlockUser.on("click", () => {
+        blockForm.action = '/manager/' + UserID + '?_method=DELETE'
+        blockForm.submit();
+    })
+
+    // role User
+    $('.down').on('click', function (e) {
+        e.preventDefault();
+        var UserID = $(this).data('id');
+        downForm.action = '/manager/' + UserID + '/down?_method=PATCH'
+        downForm.submit();
+    })
+
+    $('.up').on('click', function (e) {
+        e.preventDefault();
+        var UserID = $(this).data('id');
+        upForm.action = '/manager/' + UserID + '/up?_method=PATCH'
+        upForm.submit();
+    })
 
 })
 </script>

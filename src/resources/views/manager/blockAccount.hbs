@@ -1,0 +1,121 @@
+<div class="container">
+    <div class="container-xl">
+        <div class="row mt-3">
+            <h3 class="mb-0 col-sm-8"><b>Danh sách thành viên bị khóa</b></h3>
+            <div class="col-sm-4 text-right">
+                <a href="/courses" class="btn btn-success btn-sm ml-auto mr-2" title="Quay lại khóa học"><i class="fas fa-play"></i> Khóa học</a>
+                <a href="./account" class="btn btn-primary btn-sm ml-auto mr-2" title="Quay lại khóa học"><i class="fas fa-undo"></i> Quản lý thành viên</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <h2><b>Administrator</b></h2>
+                        <p class="mb-0 mt-2"><b>Total:</b> <span class="total">N/A</span></p>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                        <tr class="text-center">
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Giới tính</th>
+                            <th>SĐT</th>
+                            <th>Địa chỉ</th>
+                            <th width="150px">Công cụ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each accountBlock}}
+                        <tr>
+                            <td>{{sum @index 1}}</td>
+                            <td class="account">
+                                <img src="{{this.image}}" alt="" class="user-avatar">
+                                <b>{{this.username}}</b>
+                            </td>
+                            <td>{{this.email}}</td>
+                            <td>{{this.GT}}</td>
+                            <td>{{this.SDT}}</td>
+                            <td>{{this.Address}}</td>
+                            <td>
+                                <a href="#" class="view btn-restore" title="Khôi phục tài khoản" data-id="{{this._id}}" data-toggle="tooltip"><i class="fas fa-trash-restore"></i></a>
+                                <div data-toggle="modal" data-target="#block-user-model" data-id="{{this._id}}" style="display: inline;">
+                                    <a href="#" class="delete" title="Xóa tài khoản" data-toggle="tooltip"><i class="fas fa-trash-alt"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        {{/each}}    
+                    </tbody>
+                </table>
+            </div>
+        </div>  
+    </div>  
+</div>
+
+{{!-- Delete hidden form --}}
+<form method="POST" name="delete-user-form"></form>
+<form method="POST" name="restore-user-form"></form>
+
+{{!-- Modal ques join courses --}}
+<div id="delete-user-model" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa tài khoản này?</h5>
+        <button type="button" class="close close-ques" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xóa tài khoản này?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-ques" data-dismiss="modal">Hủy</button>
+        <button id="btn-delete-user" type="button" class="btn btn-danger">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- script --}}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // zone khai bao cac kieu
+    // block user
+    var btnDeleteUser = $("#btn-delete-user");
+    var deleteForm = document.forms['delete-user-form']
+    var restoreForm = document.forms['restore-user-form']
+
+
+    // code
+    $(document).ready(function(){
+	    $('[data-toggle="tooltip"]').tooltip();
+    });
+    
+    // Count member
+    // console.log($.find(".accountUser"));
+    $(".total").text($.find(".account").length);
+
+    // restore User
+    $('.btn-restore').on('click', function (e) {
+        e.preventDefault();
+        var UserID = $(this).data('id');
+        deleteForm.action = '/manager/' + UserID + '?_method=PATCH'
+        deleteForm.submit();
+    })
+
+    // delete User
+    $('#delete-user-model').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        UserID = button.data('id')
+        console.log(UserID);
+    })
+    btnDeleteUser.on("click", () => {
+        deleteForm.action = '/manager/' + UserID + '/force?_method=DELETE'
+        deleteForm.submit();
+    })
+
+})
+</script>

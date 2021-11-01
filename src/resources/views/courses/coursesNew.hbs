@@ -1,0 +1,76 @@
+<div class="container">
+    <!-- Sidenav-->
+
+
+    <div class="mt-4">
+        <div class="row">
+            <h3 class="mb-0 col-sm-4"><b>Các khóa học vừa cập nhật:</b></h3>
+            <a class="col-sm-8 text-right" href="/courses">Quay lại <i class="fas fa-angle-double-left"></i></a>
+        </div>
+        <div class="row">
+            {{#each coursesNew}}
+            <div class="col-sm-3 col-lg-3 card-deck mt-4">
+                <div class="card card-course-item">
+                    <a href="/courses/{{this.slug}}">
+                        <img class="card-img-top" src="{{this.image}}" alt="{{this.image}}">
+                    </a>
+
+                    <div class="card-body">
+                            <a href="/courses/{{this.slug}}">
+                                <h5 class="card-title">{{this.name}}</h5>
+                            </a>
+                        <p class="card-text">{{this.mieuta}}</p>
+                        <p><img src={{this.actor.image}} alt="" class="user-avatar"><b>{{this.actor.username}}</b></p>
+                        <div class="card-footer d-flex">
+                            <small class="text-muted time">{{this.updatedAt}}</small>
+                            <small class="text-muted ml-auto"><i class="fas fa-users"></i> N/A</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{else}}
+            <div class="row mt-3 mb-5">
+                <h5 class="mb-0 text-center">Không có khóa học phù hợp cho chủ đề này (-.-)!</h5>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+<div class="row" style="height: 50px;"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var card = $(".card.card-course-item");
+        
+
+        // format time
+        var time = $(".time").map(function() {
+            $(this).text(moment($(this).text()).fromNow());
+        }).get();
+
+        // get number join courses
+        $(function() {
+            $.each(card, function(index, value) {
+                // console.log(value);
+
+                var link = $(value).children("a").attr('href');
+                // console.log(link);
+                var slugCourse = link.substring(link.lastIndexOf("/")+1, link.length);
+                // console.log(slugCourse);
+
+                $.ajax({
+                    url: '/courses/getNumUser',
+                    type: 'POST',
+                    data: {
+                        slug: slugCourse
+                    }
+                }).done(function(ketqua) {
+                    // console.log(ketqua);
+                    var numUser = $(value).find(".text-muted.ml-auto").html("<i class='fas fa-users'></i> " +  ketqua);
+                    // console.log(numUser.text());
+                });
+            })
+        })
+    })
+</script>

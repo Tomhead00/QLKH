@@ -23,13 +23,23 @@ module.exports = new GoogleStrategy(
         process.nextTick(function (req, res, next) {
             User.findOne(
                 { email: profile.emails[0].value },
-                function (err, user) {
+                async function (err, user) {
                     if (err)
                         return done(err, {
                             message:
                                 'Đăng nhập thất bại! Vui lòng thử lại hoặc chọn phương thức đăng nhập khác!',
                         });
-                    if (user) {
+                    if (
+                        (await User.countDocumentsDeleted({
+                            email: profile.emails[0].value,
+                        })) == 1
+                    ) {
+                        // console.log("test");
+                        return done(null, false, {
+                            message: 'Tài khoản đã bị khóa!',
+                            reason: 'blocked',
+                        });
+                    } else if (user) {
                         // console.log("user found")
                         // console.log(user)
                         return done(null, user);

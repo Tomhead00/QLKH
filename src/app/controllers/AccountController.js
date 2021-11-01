@@ -170,8 +170,12 @@ class AccountController {
     async update(req, res, next) {
         if (req.file) {
             req.body.image = '/img/user/' + req.file.filename;
+            var path = './src/public' + req.session.passport.user.image;
 
-            if (req.session.passport.user.image != '/img/user/default.jpg')
+            if (
+                fs.existsSync(path) &&
+                req.session.passport.user.image != '/img/user/default.jpg'
+            )
                 fs.unlinkSync('./src/public' + req.session.passport.user.image);
         }
 
@@ -179,7 +183,7 @@ class AccountController {
             .then(async () => {
                 var user = await User.findById(req.params.id);
                 req.session.passport.user = user;
-                res.redirect('/courses');
+                res.redirect(req.body.url);
             })
             .catch(next);
     }

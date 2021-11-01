@@ -290,9 +290,27 @@
                 }
             }, 2000)
         }
-        
-        // run auto when load page
-        // unlockFirstVideo();
+
+        function checkJoinCourse() {
+            // check join khoa hoc
+            $.ajax({
+                url: '/courses/checkThamgia',
+                type: 'POST',
+                data: {
+                    slug: `{{course.slug}}`,
+                }
+            }).done(function(ketqua) {
+                // console.log(ketqua);
+                if (ketqua == 0) {
+                    $.ajax({
+                        url: '/courses/thamGia/' + `{{course.slug}}`,
+                        type: 'POST',
+                    })                    
+                    // joinCourseForm.action = "/courses/thamGia/" + slugCourse;
+                }
+            });
+        }
+        checkJoinCourse();
     // })
 
     // Comment

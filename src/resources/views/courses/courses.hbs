@@ -1,15 +1,21 @@
 <div class="container">
-    <div class="row mt-4">
-        <div class="input-group d-flex justify-content-end">
-            <div class="form-outline">
-                <input id="search-input" type="search" id="form1" class="form-control" style="width: 300px;" />
-                <label class="form-label" for="form1">Search</label>
-            </div>
-            <button id="search-button" type="button" class="btn btn-primary">
-                <i class="fas fa-search"></i>
-            </button>
+    <div style="position: relative;">
+        <div class="row mt-4">
+            <form class="input-group d-flex justify-content-end" id="formSearch">
+                <div class="form-outline">
+                    <input id="search-input" type="search" id="form1" class="form-control" style="width: 300px;"  autocomplete="off" />
+                    <label class="form-label" for="form1">Search</label>
+                </div>
+                <button id="close-button" type="button" class="btn btn-danger">
+                    <i class="fas fa-close"></i>
+                </button>
+            </form>
         </div>
+
+        <div class="list-group" id="resultSearch"></div>
     </div>
+
+    <!-- Sidenav-->
 
     <div class="mt-4">
         <div class="row">
@@ -19,12 +25,12 @@
             {{#each courses}}
             <div class="col-sm-3 col-lg-3 card-deck mt-4">
                 <div class="card card-course-item">
-                    <a href="/courses/{{this.slug}}">
+                    <a href="/courses/show/{{this.slug}}">
                         <img class="card-img-top" src="{{this.image}}" alt="{{this.image}}">
                     </a>
 
                     <div class="card-body">
-                        <a href="/courses/{{this.slug}}">
+                        <a href="/courses/show/{{this.slug}}">
                             <h5 class="card-title">{{this.name}}</h5>
                         </a>
                         <p class="card-text">{{this.mieuta}}</p>
@@ -48,18 +54,18 @@
     <div class="mt-4">
         <div class="row">
             <h3 class="mb-0 col-sm-4"><b>Các khóa học vừa cập nhật:</b></h3>
-            <a class="col-sm-8 text-right" href="#">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
+            <a class="col-sm-8 text-right" href="/courses/courseNew">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
         </div>
         <div class="row">
             {{#each coursesNew}}
             <div class="col-sm-3 col-lg-3 card-deck mt-4">
                 <div class="card card-course-item">
-                    <a href="/courses/{{this.slug}}">
+                    <a href="/courses/show/{{this.slug}}">
                         <img class="card-img-top" src="{{this.image}}" alt="{{this.image}}">
                     </a>
 
                     <div class="card-body">
-                            <a href="/courses/{{this.slug}}">
+                            <a href="/courses/show/{{this.slug}}">
                                 <h5 class="card-title">{{this.name}}</h5>
                             </a>
                         <p class="card-text">{{this.mieuta}}</p>
@@ -82,18 +88,18 @@
     <div class="mt-4">
         <div class="row">
             <h3 class="mb-0 col-sm-4"><b>Các khóa học phổ biến:</b></h3>
-            <a class="col-sm-8 text-right" href="#">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
+            <a class="col-sm-8 text-right" href="/courses/coursePopular">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
         </div>
         <div class="row">
             {{#each courseFA}}
             <div class="col-sm-3 col-lg-3 card-deck mt-4">
                 <div class="card card-course-item">
-                    <a href="/courses/{{this.slug}}">
+                    <a href="/courses/show/{{this.slug}}">
                         <img class="card-img-top" src="{{this.image}}" alt="{{this.image}}">
                     </a>
 
                     <div class="card-body">
-                            <a href="/courses/{{this.slug}}">
+                            <a href="/courses/show/{{this.slug}}">
                                 <h5 class="card-title">{{this.name}}</h5>
                             </a>
                         <p class="card-text">{{this.mieuta}}</p>
@@ -116,18 +122,18 @@
     <div class="mt-4">
         <div class="row">
             <h3 class="mb-0 col-sm-4"><b>Các khóa học khác:</b></h3>
-            <a class="col-sm-8 text-right" href="#">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
+            <a class="col-sm-8 text-right" href="/courses/courseAnother">Xem tất cả <i class="fas fa-angle-double-right"></i></a>
         </div>
         <div class="row">
             {{#each coursesAnother}}
             <div class="col-sm-3 col-lg-3 card-deck mt-4">
                 <div class="card card-course-item">
-                    <a href="/courses/{{this.slug}}">
+                    <a href="/courses/show/{{this.slug}}">
                         <img class="card-img-top" src="{{this.image}}" alt="{{this.image}}">
                     </a>
 
                     <div class="card-body">
-                            <a href="/courses/{{this.slug}}">
+                            <a href="/courses/show/{{this.slug}}">
                                 <h5 class="card-title">{{this.name}}</h5>
                             </a>
                         <p class="card-text">{{this.mieuta}}</p>
@@ -145,6 +151,7 @@
             </div>
             {{/each}}
         </div>
+        <div class="row" style="height: 50px;"></div>
     </div>
 </div>
 
@@ -245,11 +252,63 @@
         $("#ques-course-model").modal("hide");
     })
     // search
-    const searchButton = document.getElementById('search-button');
-    const searchInput = document.getElementById('search-input');
-    searchButton.addEventListener('click', () => {
-        const inputValue = searchInput.value;
-        alert(inputValue);
+    const closeButton = $('#close-button');
+    const searchInput = $('#search-input');
+    const formSearch = $('#formSearch');
+    const resultSearch = $('#resultSearch');
+
+    formSearch.submit((e) => {
+        e.preventDefault();
+    })
+
+    function updateTimeSearch() {
+        $(".timeSearch").map(function() {
+            // console.log($(this).text());
+            $(this).text(moment($(this).text()).fromNow());
+        }).get();
+    }
+
+    searchInput.on('keyup', () => {
+        const inputValue = searchInput.val();
+        // console.log(inputValue);
+
+        $.ajax({
+            url: '/courses/search',
+            type: 'POST',
+            data: {
+                name: inputValue,
+            }
+        })
+        .done(function(ketqua) {
+            // console.log(ketqua);
+            var allSearch = "";
+            ketqua.forEach(element => {
+                // console.log(element);
+                var name = element.name;
+                var nameProcess = name.replace(/\n/g, "<br/>");
+                allSearch += (`
+                    <a href="courses/` + element.slug + `" class="list-group-item list-group-item-action" aria-current="true">
+                        <div class="row">
+                                <h5 class="mb-1 text2line col-sm-9"><b>` + element.name + `</b></h5>
+                                <small class="timeSearch col-sm-3 text-right">` + element.updatedAt + `</small>
+                        </div>
+                        <p class="mb-1 text2line">
+                            ` + element.mieuta + `
+                        </p>
+                        <p><img src="` + element.actor.image + `" alt="" class="user-avatar"><b>` + element.actor.username + `</b></p>
+                    </a>
+                `)
+            });
+            resultSearch.html(allSearch);
+            updateTimeSearch();
+        });
+
     });
+
+    closeButton.on("click", () => {
+        formSearch[0].reset();
+    })
   })
 </script>
+
+<b></b>

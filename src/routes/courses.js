@@ -15,7 +15,7 @@ router.put('/:id', courseController.update);
 router.patch('/:id/restore', courseController.restore);
 router.delete('/:id', courseController.delete);
 router.delete('/:id/force', courseController.forceDelete);
-router.get('/:slug', courseController.show);
+router.get('/show/:slug', courseController.show);
 router.post('/getNumUser', courseController.getNumUser);
 
 // AJAX show video
@@ -25,5 +25,12 @@ router.post('/unlockVideo', courseController.unlockVideo);
 // AJAX Comment
 router.post('/addComment', courseController.addComment);
 router.post('/refreshComment', courseController.refreshComment);
+
+// AJAX search
+router.post('/search', courseController.search);
+// courses option
+router.get('/courseNew', courseController.courseNew);
+router.get('/coursePopular', courseController.coursePopular);
+router.get('/courseAnother', courseController.courseAnother);
 
 module.exports = router;
