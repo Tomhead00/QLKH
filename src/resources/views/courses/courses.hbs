@@ -194,9 +194,9 @@
     card.on("click", function (e) {
         e.preventDefault();
         var link = $(this).children("a").attr('href');
-        // console.log($(this).children("a").attr('href'));
+        console.log(link);
         var slugCourse = link.substring(link.lastIndexOf("/")+1, link.length);
-        // console.log(course);
+        //console.log(slugCourse);
 
         $.ajax({
             url: '/courses/checkThamgia',
@@ -205,7 +205,7 @@
                 slug: slugCourse
             }
         }).done(function(ketqua) {
-            console.log(ketqua);
+            // console.log(ketqua);
             if (ketqua == 0) {
                 $("#ques-course-model").modal("show");
                 btnThamgia.on('click', function thamGia() {

@@ -21,6 +21,7 @@ class CourseController {
 
         const courses = await Course.find({ _id: { $in: user.khoahoc } })
             .populate({ modal: 'user', path: 'actor' })
+            .sort({ updatedAt: -1 })
             .catch(next);
 
         // Cac khoa hoc noi bat
@@ -41,14 +42,17 @@ class CourseController {
         arr.sort(function (a, b) {
             return b.count - a.count;
         });
-        var arrID = arr.map((item) => item._id);
-        // console.log(arr);
-        console.log(arrID);
+        arr = arr.slice(0, 4);
 
-        const courseFA = await Course.find({ _id: { $in: arrID } })
-            .populate({ modal: 'user', path: 'actor' })
-            .limit(4)
-            .catch(next);
+        let courseFA = await Promise.all(
+            arr.map(async (item) => {
+                // console.log(item._id);
+                let test = await Course.findOne({ _id: item._id })
+                    .populate({ modal: 'user', path: 'actor' })
+                    .catch(next);
+                return test;
+            }),
+        );
 
         // Cac khoa vua cap nhat
         const coursesNew = await Course.find({})
@@ -67,6 +71,7 @@ class CourseController {
             .limit(4);
         // res.json(course);
         // res.json(courses1);
+        // res.json(courseFA);
         res.render('courses/courses', {
             courses: multipleMongooseToObject(courses),
             coursesNew: multipleMongooseToObject(coursesNew),
@@ -93,7 +98,6 @@ class CourseController {
 
     // GET /course/coursePopular
     async coursePopular(req, res, next) {
-        // Cac khoa hoc noi bat
         var arr = [];
         const trend = await Course.find({})
             .populate({ modal: 'user', path: 'actor' })
@@ -111,11 +115,17 @@ class CourseController {
         arr.sort(function (a, b) {
             return b.count - a.count;
         });
-        var arrID = arr.map((item) => item._id);
+        // arr = arr.slice(0, 4);
 
-        const courseFA = await Course.find({ _id: { $in: arrID } })
-            .populate({ modal: 'user', path: 'actor' })
-            .catch(next);
+        let courseFA = await Promise.all(
+            arr.map(async (item) => {
+                // console.log(item._id);
+                let test = await Course.findOne({ _id: item._id })
+                    .populate({ modal: 'user', path: 'actor' })
+                    .catch(next);
+                return test;
+            }),
+        );
 
         res.render('courses/coursesPopular', {
             courseFA: multipleMongooseToObject(courseFA),
@@ -336,7 +346,7 @@ class CourseController {
             { new: true, useFindAndModify: false },
         )
             .then(() => {
-                res.redirect('/courses/' + req.params.slug);
+                res.redirect('/courses/show/' + req.params.slug);
             })
             .catch(next);
     }
