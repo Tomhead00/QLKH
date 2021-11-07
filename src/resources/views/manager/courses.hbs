@@ -1,0 +1,124 @@
+<div class="container">
+    <form>
+        <div class="container-xl">
+            <div class="row mt-3">
+                <h3 class="mb-0 col-sm-8"><b>Quản lý khóa học</b></h3>
+                <div class="col-sm-4 text-right">
+                    <a href="/courses" class="btn btn-success btn-sm ml-auto mr-2" title="Quay lại khóa học"><i class="fas fa-play"></i> khóa học</a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <div class="table-wrapper">
+
+                    <div class="table-title">
+                        <div class="row">
+                            <p class="mb-0 mt-2"><b>Total:</b> <span class="total">N/A</span></p>
+                        </div>
+                    </div>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Tên khóa học {{{sortable 'name' _sort}}}</th>
+                                <th scope="col">Miêu tả khóa học {{{sortable 'mieuta' _sort}}}</th>
+                                <th scope="col" width="200px">Đăng bởi {{{sortable 'actor' _sort}}}</th>
+                                <th scope="col">Thời gian tạo  {{{sortable 'createdAt' _sort}}}</th>
+                                <th scope="col">Thời gian cập nhật  {{{sortable 'updatedAt' _sort}}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each courses}}
+                            <tr>
+                                <th scope="row">{{sum @index 1}}</th>
+                                <td class="courses">{{this.name}}</td>
+                                <td class=>{{this.mieuta}}</td>
+                                <td class=>
+                                  <img src="{{this.actor.image}}" alt="" class="user-avatar">
+                                  {{this.actor.username}}
+                                </td>
+                                <td class="time">{{this.createdAt}}</td>
+                                <td class="time">{{this.updatedAt}}</td>
+                                <td>
+                                    <a href="/me/stored/{{this._id}}/edit" class="edit" title="Sửa" data-toggle="tooltip"><i class="fas fa-user-edit"></i></a>
+                                    <div data-toggle="modal" data-target="#delete-course-model" data-id="{{this._id}}" style="display: inline;">
+                                        <a href="#" class="delete" title="Xóa" data-toggle="tooltip"><i class="fas fa-trash-alt"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{else}}
+                            <tr>
+                                <td colspan="7" class="text-center"> Không có khóa học nào được tạo!
+                            </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>  
+        </div>
+    </form>
+</div>
+
+{{!-- Confirm DELETE  --}}
+
+<div id="delete-course-model" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa khóa học?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn chắc chắn xóa khóa học này?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <button id="btn-delete-course" type="button" class="btn btn-danger">Xóa bỏ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- Delete hidden form --}}
+<form method="POST" name="delete-course-form"></form>
+
+{{!-- script --}}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Khai bao
+  var courseID;
+  var btnDeleteCourse = $("#btn-delete-course");
+  var deleteForm = document.forms['delete-course-form']
+
+
+  // change time
+  var time = $(".time").map(function() {
+      $(this).text(moment($(this).text()).format("D/M/yyyy hh:mm:ss"));
+  }).get();
+
+
+  // code
+  $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+  
+  // Count Ad, member
+  // console.log($.find(".courses"));
+  $(".total").text($.find(".courses").length);
+
+  $('#delete-course-model').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    courseID = button.data('id')
+    console.log(courseID);
+  })
+  btnDeleteCourse.on("click", () => {
+    deleteForm.action = "/courses/" + courseID + "/force?_method=DELETE"
+    deleteForm.submit();
+  })
+
+
+})
+</script>

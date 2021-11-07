@@ -73,24 +73,30 @@ class MeController {
                 // res.json(course);
                 // console.log(course.actor.email);
                 try {
-                    if (req.session.passport.user.email != course.actor.email) {
+                    if (
+                        req.session.passport.user.email == course.actor.email ||
+                        req.session.passport.user.role == 'admin'
+                    ) {
+                        var countDel;
+                        await Course.findById(req.params.id).then(
+                            async (course1) => {
+                                // console.log(course1.video)
+                                countDel = await Video.countDocumentsDeleted({
+                                    _id: course1.video,
+                                });
+                            },
+                        );
+                        res.render('me/edit', {
+                            username: req.session.passport,
+                            countDel,
+                            course: mongooseToObject(course),
+                        });
+                    } else {
                         return res.redirect('/me/stored/courses');
                     }
                 } catch (next) {
                     return res.redirect('/me/stored/courses');
                 }
-                var countDel;
-                await Course.findById(req.params.id).then(async (course1) => {
-                    // console.log(course1.video)
-                    countDel = await Video.countDocumentsDeleted({
-                        _id: course1.video,
-                    });
-                });
-                res.render('me/edit', {
-                    username: req.session.passport,
-                    countDel,
-                    course: mongooseToObject(course),
-                });
             })
             .catch(next);
     }
@@ -197,28 +203,34 @@ class MeController {
             .populate({ modal: 'user', path: 'actor' })
             .then((course) => {
                 try {
-                    if (req.session.passport.user.email != course.actor.email) {
+                    if (
+                        req.session.passport.user.email != course.actor.email ||
+                        req.session.passport.user.role == 'admin'
+                    ) {
+                        let videoQuery = Video.findDeleted({
+                            _id: course.video,
+                        });
+
+                        if (req.query.hasOwnProperty('_sort')) {
+                            videoQuery = videoQuery.sort({
+                                [req.query.column]: req.query.type,
+                            });
+                        }
+
+                        videoQuery.then((videos) =>
+                            res.render('me/trashId', {
+                                username: req.session.passport,
+                                videos: multipleMongooseToObject(videos),
+                                idCourse: req.params.id,
+                                nameCourse: course.name,
+                            }),
+                        );
+                    } else {
                         return res.redirect('/me/stored/courses');
                     }
                 } catch (next) {
                     return res.redirect('/me/stored/courses');
                 }
-                let videoQuery = Video.findDeleted({ _id: course.video });
-
-                if (req.query.hasOwnProperty('_sort')) {
-                    videoQuery = videoQuery.sort({
-                        [req.query.column]: req.query.type,
-                    });
-                }
-
-                videoQuery.then((videos) =>
-                    res.render('me/trashId', {
-                        username: req.session.passport,
-                        videos: multipleMongooseToObject(videos),
-                        idCourse: req.params.id,
-                        nameCourse: course.name,
-                    }),
-                );
             })
             .catch(next);
     }

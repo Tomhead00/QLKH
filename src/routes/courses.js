@@ -31,6 +31,5 @@ router.post('/search', courseController.search);
 // courses option
 router.get('/courseNew', courseController.courseNew);
 router.get('/coursePopular', courseController.coursePopular);
-router.get('/courseAnother', courseController.courseAnother);
 
 module.exports = router;

@@ -100,6 +100,37 @@ class ManagerController {
             res.redirect('back');
         }
     }
+
+    // ------------------ Courses ------------------
+    // GET /courses
+    async courses(req, res, next) {
+        let courseQuery = Course.find({}).populate({
+            modal: 'user',
+            path: 'actor',
+        });
+
+        if (req.query.hasOwnProperty('_sort')) {
+            courseQuery = courseQuery.sort({
+                [req.query.column]: req.query.type,
+            });
+        }
+
+        Promise.all([
+            courseQuery,
+            Course.countDocumentsDeleted({
+                actor: req.session.passport.user._id,
+            }),
+        ])
+            .then(([courses, deletedCount]) => {
+                // res.json(courses)
+                res.render('manager/courses', {
+                    username: req.session.passport,
+                    deletedCount,
+                    courses: multipleMongooseToObject(courses),
+                });
+            })
+            .catch(next);
+    }
 }
 
 module.exports = new ManagerController();

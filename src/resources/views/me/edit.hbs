@@ -28,7 +28,7 @@
                         <a href="#">
                             <h5 class="card-title">{{this.name}}</h5>
                         </a>
-                    <p class="card-text">{{this.mieuta}}</p>
+                    <p class="card-text mt">{{this.mieuta}}</p>
                     <div class="mb-3 ml-2 action">
                         <a id="/{{this._id}}/preview" class="btn btn-light mr-1"><i class="fas fa-angle-left"></i></a>
                         <a id="/{{this._id}}/setting" class="btn btn-light mr-1"><i class="fas fa-cog"></i></a>
@@ -92,5 +92,9 @@
             // console.log($("#actionForm").attr("action"));
             $("#actionForm").submit();
         })
+
+        // refesh mieu ta /n
+        enterDes();
+
     })
 </script>

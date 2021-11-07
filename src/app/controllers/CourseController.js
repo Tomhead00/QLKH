@@ -67,8 +67,7 @@ class CourseController {
         })
             .populate({ modal: 'user', path: 'actor' })
             .populate('video')
-            .sort({ updatedAt: -1 })
-            .limit(4);
+            .sort({ updatedAt: -1 });
         // res.json(course);
         // res.json(courses1);
         // res.json(courseFA);
@@ -129,27 +128,6 @@ class CourseController {
 
         res.render('courses/coursesPopular', {
             courseFA: multipleMongooseToObject(courseFA),
-            username: req.session.passport,
-        });
-    }
-
-    // GET /course/courseAnother
-    async courseAnother(req, res, next) {
-        // Cac khoa vua khac
-        const user = await User.findById({
-            _id: req.session.passport.user._id,
-        });
-
-        const coursesAnother = await Course.find({
-            _id: { $nin: user.khoahoc },
-        })
-            .populate({ modal: 'user', path: 'actor' })
-            .populate('video')
-            .sort({ updatedAt: -1 });
-
-        //res.json(coursesAnother);
-        res.render('courses/coursesAnother', {
-            coursesAnother: multipleMongooseToObject(coursesAnother),
             username: req.session.passport,
         });
     }
@@ -249,7 +227,7 @@ class CourseController {
     }
     // DELETE /courses/:id/forceDelete
     forceDelete(req, res, next) {
-        // res.json(req.body)
+        // res.json(req.params)
         User.updateMany(
             {},
             { $pull: { khoahoc: req.params.id } },
@@ -410,12 +388,12 @@ class CourseController {
     }
 
     // POST /search <AJAX>
-    search(req, res, next) {
+    async search(req, res, next) {
         // res.send(req.body.videoID);
         if (req.body.name == '') {
             res.send([]);
         } else {
-            Course.find({ name: new RegExp(req.body.name, 'i') })
+            Course.find({ $or: [{ name: new RegExp(req.body.name, 'i') }] })
                 .populate({ modal: 'user', path: 'actor' })
                 .then((courses) => {
                     res.send(courses);

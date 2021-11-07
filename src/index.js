@@ -24,12 +24,14 @@ const LoginLocal = require('./app/middlewares/LoginLocal');
 const LoginGG = require('./app/middlewares/LoginGG');
 const CheckUser = require('./app/middlewares/CheckUser');
 const CheckRole = require('./app/middlewares/CheckRole');
+const CheckInfo = require('./app/middlewares/CheckInfo');
 
 // connect to DB
 db.connect();
 
 // use static folder
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'resources/js')));
 
 app.use(
     express.urlencoded({
@@ -65,9 +67,12 @@ app.use(
 app.use(SortMiddleware);
 
 app.get('/courses', CheckUser);
-app.get('/me', CheckUser);
-app.get('/manager/:slug', CheckUser, CheckRole);
 app.get('/courses/:slug', CheckUser);
+app.get('/me', CheckUser);
+// edit profile
+app.get('/account/edit/:id', CheckInfo);
+// manager
+app.get('/manager/:slug', CheckUser, CheckRole);
 
 // passport fb
 passport.use(LoginFB);
@@ -223,6 +228,8 @@ app.engine(
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item text-danger" href="/manager/account">Quản lý tài khoản</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="/manager/courses">Quản lý khóa học</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#infor">Thông tin tài khoản</a>
                         <div class="dropdown-divider"></div>

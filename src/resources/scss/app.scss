@@ -342,6 +342,10 @@ table.table td i {
     max-width: 500px;
 }
 
+.highlight {
+    background-color: orange;
+}
+
 // custom
 .app {
     min-height: 100vh;
@@ -359,14 +363,20 @@ table.table td i {
     margin-right: 4px;
 }
 
-.card-title,
-.text2line {
+.card-title {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* number of lines to show */
     -webkit-box-orient: vertical;
     min-height: 50px;
+}
+.text2line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
 }
 
 .card-footer {

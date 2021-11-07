@@ -19,7 +19,7 @@
                             <a href="/courses/show/{{this.slug}}">
                                 <h5 class="card-title">{{this.name}}</h5>
                             </a>
-                        <p class="card-text">{{this.mieuta}}</p>
+                        <p class="card-text mt">{{this.mieuta}}</p>
                         <p><img src={{this.actor.image}} alt="" class="user-avatar"><b>{{this.actor.username}}</b></p>
                         <div class="card-footer d-flex">
                             <small class="text-muted time">{{this.updatedAt}}</small>
@@ -71,5 +71,8 @@
                 });
             })
         })
+        // refesh mieu ta /n
+        enterDes();
+
     })
 </script>
