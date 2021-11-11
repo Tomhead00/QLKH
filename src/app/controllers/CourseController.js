@@ -162,7 +162,7 @@ class CourseController {
     // POST /courses/refreshComment <AJAX>
     async refreshComment(req, res, next) {
         // console.log(req.body);
-        await Comment.find({ course: req.body.course })
+        await Comment.find({ videoID: req.body.videoID })
             .sort({ createdAt: -1 })
             .populate({ modal: 'user', path: 'actor' })
             .then((comment) => {

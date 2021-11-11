@@ -8,9 +8,9 @@ const Comment = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'user',
         },
-        course: {
-            type: mongoose.Schema.Types.Number,
-            ref: 'Course',
+        videoID: {
+            type: mongoose.Schema.Types.String,
+            ref: 'Video',
         },
     },
     {

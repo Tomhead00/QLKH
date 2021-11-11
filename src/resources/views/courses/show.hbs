@@ -87,6 +87,7 @@
 
 <script>
     var videoPlaying = 0;
+    var videoIDs = null;
     var firstLoading = true;
     // 2. This code loads the IFrame Player API code asynchronously.
     var tag = document.createElement('script');
@@ -163,6 +164,7 @@
                 var link = $(this).find("img").attr("src");
                 // console.log(link);
                 var videoID = link.substring(link.indexOf("vi/")+3, link.indexOf("vi/")+14)
+                videoIDs = videoID;
                 // console.log(videoID);
                 selectList.find(".fas").removeClass("fa-play").attr("style",false);
                 selectList.attr("style",false);
@@ -178,8 +180,8 @@
                 var i = selectList.index($(this));
                 videoPlaying = i;
                 // console.log(videoPlaying);
-
                 autoCheckUnlock();
+                refreshComment(videoIDs);
             }
         })
 
@@ -260,7 +262,7 @@
                 }
             }
             updateTime();
-            refreshComment();
+            // refreshComment();
         }
         
         function nextVideo() {
@@ -313,19 +315,18 @@
     var btnSubComment = $(".btn.btn-primary.btn-sm");
     var btnCancel = $(".btn.btn-outline-primary.btn-sm");
     var textArea = $("#textAreaExample");
-    var courseID = "{{course._id}}";
     var totalComment = $("#totalComment");
     // console.log(courseID);
 
     // list comment
     var listComment = $("#comments-list");
 
-    function refreshComment() {
+    function refreshComment(videoID) {
         $.ajax({
             url: '/courses/refreshComment',
             type: 'POST',
             data: {
-                course: courseID,
+                videoID: videoID,
             }
         })
         .done(function(ketqua) {
@@ -355,6 +356,7 @@
 
     btnSubComment.on("click", function (e) {
         // console.log(textArea.val());
+        // console.log(videoIDs);
         content = textArea.val();
         if (content != "") {
             e.preventDefault();
@@ -363,14 +365,14 @@
                 type: 'POST',
                 data: {
                     content: content,
-                    course: courseID,
+                    videoID: videoIDs,
                 }
             })
             .done(function(ketqua) {
                 // console.log(ketqua);
             });
             btnCancel.click();
-            refreshComment();
+            refreshComment(videoIDs);
         }
     })
 
