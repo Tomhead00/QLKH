@@ -35,6 +35,7 @@ class MeController {
         ])
             .then(([courses, deletedCount]) =>
                 res.render('me/stored-courses', {
+                    title: 'Khóa học của tôi',
                     username: req.session.passport,
                     deletedCount,
                     courses: multipleMongooseToObject(courses),
@@ -57,6 +58,7 @@ class MeController {
         Promise.all([courseQuery, Course.countDocumentsDeleted()]).then(
             ([courses, deletedCount]) =>
                 res.render('me/trash-courses', {
+                    title: 'Xóa khóa học',
                     username: req.session.passport,
                     deletedCount,
                     courses: multipleMongooseToObject(courses),
@@ -87,6 +89,7 @@ class MeController {
                             },
                         );
                         res.render('me/edit', {
+                            title: 'Tùy chỉnh khóa học',
                             username: req.session.passport,
                             countDel,
                             course: mongooseToObject(course),
@@ -105,6 +108,7 @@ class MeController {
         Course.findById(req.params.id)
             .then((course) =>
                 res.render('me/editVideo', {
+                    title: 'Thêm video cho khóa học',
                     username: req.session.passport,
                     course: mongooseToObject(course),
                 }),
@@ -189,6 +193,7 @@ class MeController {
         Video.findById(req.params._id)
             .then((video) =>
                 res.render('me/updateVideo', {
+                    title: 'Cập nhật video khóa học',
                     username: req.session.passport,
                     video: mongooseToObject(video),
                     course: mongooseToObject(course),
@@ -204,7 +209,7 @@ class MeController {
             .then((course) => {
                 try {
                     if (
-                        req.session.passport.user.email != course.actor.email ||
+                        req.session.passport.user.email == course.actor.email ||
                         req.session.passport.user.role == 'admin'
                     ) {
                         let videoQuery = Video.findDeleted({
@@ -219,6 +224,7 @@ class MeController {
 
                         videoQuery.then((videos) =>
                             res.render('me/trashId', {
+                                title: 'Video đã xóa',
                                 username: req.session.passport,
                                 videos: multipleMongooseToObject(videos),
                                 idCourse: req.params.id,
@@ -226,6 +232,11 @@ class MeController {
                             }),
                         );
                     } else {
+                        console.log(
+                            req.session.passport.user.email,
+                            course.actor.email,
+                            req.session.passport.user.role,
+                        );
                         return res.redirect('/me/stored/courses');
                     }
                 } catch (next) {

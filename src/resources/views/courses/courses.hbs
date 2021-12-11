@@ -283,7 +283,7 @@
                 }
             })
             .done(function(ketqua) {
-                // console.log(ketqua.length);
+                // console.log(ketqua);
                 let allSearch = "";
                 if (ketqua.length == 0) {
                     allSearch = `<p class="text-center list-group-item list-group-item-action"><i class="fas fa-search"></i> Không có kết quả cho từ khóa <b>`+ inputValue +`</b></p>`
@@ -294,11 +294,12 @@
                         // name.replace(/\n/g, "<br/>");
                         var regex = new RegExp(inputValue, "gi");
                         // console.log(regex);
-
-                        var name = element.name.replace(regex, "<span class='highlight'>"+element.name.match(regex)[0]+"</span>");
-                        var mieuta = element.mieuta.replace(regex, "<span class='highlight'>"+element.name.match(regex)[0]+"</span>");
-
-
+                        name = "<span class='highlight'>"+element.name+"</span>";
+                        mieuta = "<span class='highlight'>"+element.mieuta+"</span>";
+                        if (!/[`~.<>;':"/[\]|{}()=_+-]/.test(inputValue)) {
+                            var name = element.name.replace(regex, "<span class='highlight'>"+element.name.match(regex)[0]+"</span>");
+                            var mieuta = element.mieuta.replace(regex, "<span class='highlight'>"+element.name.match(regex)[0]+"</span>");
+                        }
 
                         allSearch += (`
                             <a href="courses/show/` + element.slug + `" class="list-group-item list-group-item-action" aria-current="true">

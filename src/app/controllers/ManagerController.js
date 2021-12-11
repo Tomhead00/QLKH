@@ -11,6 +11,7 @@ class ManagerController {
         let accountUser = await User.find({ role: 'user' });
         let accountBlock = await User.countDocumentsDeleted();
         res.render('manager/account', {
+            title: 'Quản lý tài khoản',
             accountAdmin: multipleMongooseToObject(accountAdmin),
             accountUser: multipleMongooseToObject(accountUser),
             accountBlock,
@@ -22,6 +23,7 @@ class ManagerController {
     async blocked(req, res, next) {
         let accountBlock = await User.findDeleted({});
         res.render('manager/blockAccount', {
+            title: 'Danh sách thành viên bị khóa',
             accountBlock: multipleMongooseToObject(accountBlock),
             username: req.session.passport,
         });
@@ -124,6 +126,7 @@ class ManagerController {
             .then(([courses, deletedCount]) => {
                 // res.json(courses)
                 res.render('manager/courses', {
+                    title: 'Quản lý khóa học',
                     username: req.session.passport,
                     deletedCount,
                     courses: multipleMongooseToObject(courses),

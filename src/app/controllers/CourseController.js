@@ -38,7 +38,8 @@ class CourseController {
                         _id: course._id,
                     });
                 }
-            });
+            })
+            .catch(next);
         arr.sort(function (a, b) {
             return b.count - a.count;
         });
@@ -67,11 +68,13 @@ class CourseController {
         })
             .populate({ modal: 'user', path: 'actor' })
             .populate('video')
-            .sort({ updatedAt: -1 });
+            .sort({ updatedAt: -1 })
+            .catch(next);
         // res.json(course);
         // res.json(courses1);
         // res.json(courseFA);
         res.render('courses/courses', {
+            title: 'Khóa học',
             courses: multipleMongooseToObject(courses),
             coursesNew: multipleMongooseToObject(coursesNew),
             courseFA: multipleMongooseToObject(courseFA),
@@ -87,9 +90,11 @@ class CourseController {
         const coursesNew = await Course.find({})
             .populate({ modal: 'user', path: 'actor' })
             .populate('video')
-            .sort({ updatedAt: -1 });
+            .sort({ updatedAt: -1 })
+            .catch(next);
 
         res.render('courses/coursesNew', {
+            title: 'Khóa học vừa cập nhật',
             coursesNew: multipleMongooseToObject(coursesNew),
             username: req.session.passport,
         });
@@ -110,7 +115,8 @@ class CourseController {
                         _id: course._id,
                     });
                 }
-            });
+            })
+            .catch(next);
         arr.sort(function (a, b) {
             return b.count - a.count;
         });
@@ -127,6 +133,7 @@ class CourseController {
         );
 
         res.render('courses/coursesPopular', {
+            title: 'Khóa học phổ biến',
             courseFA: multipleMongooseToObject(courseFA),
             username: req.session.passport,
         });
@@ -139,6 +146,7 @@ class CourseController {
             .then((course) => {
                 // res.json(course);
                 res.render('courses/show', {
+                    title: req.params.slug,
                     course: mongooseToObject(course),
                     username: req.session.passport,
                 });
@@ -167,7 +175,8 @@ class CourseController {
             .populate({ modal: 'user', path: 'actor' })
             .then((comment) => {
                 res.send(comment);
-            });
+            })
+            .catch(next);
     }
 
     // POST /courses/store
@@ -227,7 +236,7 @@ class CourseController {
     }
     // DELETE /courses/:id/forceDelete
     forceDelete(req, res, next) {
-        // res.json(req.params)
+        //res.json(req.params)
         User.updateMany(
             {},
             { $pull: { khoahoc: req.params.id } },
@@ -236,9 +245,11 @@ class CourseController {
 
         Course.findOneDeleted({ _id: req.params.id })
             .then((course) => {
-                // console.log(course.video);
-                for (const _id of course.video) {
-                    Video.deleteOne({ _id: _id }).catch(next);
+                // console.log(course);
+                if (course != null) {
+                    for (const _id of course.video) {
+                        Video.deleteOne({ _id: _id }).catch(next);
+                    }
                 }
             })
             .catch(next);
@@ -332,12 +343,14 @@ class CourseController {
     // POST /courses/getNumUser <AJAX>
     getNumUser(req, res, next) {
         // console.log(req.body);
-        Course.findOne(req.body).then((course) => {
-            // console.log(course._id)
-            User.countDocuments({ khoahoc: course }).then((count) => {
-                res.send(count.toString());
-            });
-        });
+        Course.findOne(req.body)
+            .then((course) => {
+                // console.log(course._id)
+                User.countDocuments({ khoahoc: course }).then((count) => {
+                    res.send(count.toString());
+                });
+            })
+            .catch(next);
     }
 
     // POST /checkUnlock <AJAX>
@@ -393,11 +406,18 @@ class CourseController {
         if (req.body.name == '') {
             res.send([]);
         } else {
-            Course.find({ $or: [{ name: new RegExp(req.body.name, 'i') }] })
+            // console.log(req.body.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+            Course.find({
+                name: new RegExp(
+                    `${req.body.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
+                    'i',
+                ),
+            })
                 .populate({ modal: 'user', path: 'actor' })
                 .then((courses) => {
                     res.send(courses);
-                });
+                })
+                .catch(next);
         }
     }
 }

@@ -8,12 +8,11 @@ const { mongooseToObject } = require('../../util/mongoose');
 const { multipleMongooseToObject } = require('../../util/mongoose');
 fs = require('fs');
 
-// Khai báo vài thứ
-
 class AccountController {
     // GET /Account/:slug and /Account/
     show(req, res) {
         res.render('./user/account', {
+            title: 'Đăng nhập / Đăng ký',
             username: req.session.passport,
         });
     }
@@ -30,9 +29,10 @@ class AccountController {
                     res.send(result.toString());
                     // console.log(result.toString())
                 },
-            );
+            ).catch(next);
         }
     }
+
     // POST /Account/logout
     logout(req, res, next) {
         req.session.destroy((err) => {
@@ -107,6 +107,7 @@ class AccountController {
     // GET form reset password
     async formReset(req, res, next) {
         res.render('./user/resetPass', {
+            title: 'Khôi phục mật khẩu',
             layout: false,
         });
     }
@@ -159,6 +160,7 @@ class AccountController {
         User.findById(req.params.id)
             .then((user) =>
                 res.render('user/edit', {
+                    title: 'Cập nhật thông tin tài khoản',
                     user: mongooseToObject(user),
                     username: req.session.passport,
                 }),
