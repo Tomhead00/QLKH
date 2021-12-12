@@ -16,7 +16,7 @@
                 <label for="name">Link video:</label>
                 <input type="text" class="form-control" id="link" placeholder="Sao chép liên kết youtube và dán vào đây!" value="https://www.youtube.com/watch?v={{video.videoID}}" required>
                 <small id="alert-link" style="display: none">Link chưa hợp lệ, Vui lòng thử lại (^.^)!</small>
-                <input type="text" class="form-control mt-3" id="videoID" name="videoID" style="display: none;" readonly>
+                <input type="text" class="form-control mt-3" id="videoID" name="videoID" readonly>
             </div>
             <div>
                 <button type="submit" class="btn btn-primary float-right ml-2">Lưu lại</button>
@@ -47,7 +47,9 @@
             return (match&&match[7].length==11)? match[7] : false;
         }
 
-        link.keyup(function () {
+        // Lấy videoID
+        videoID.val(youtube_parser(link.val()));
+        link.keyup(function cut() {
             videoID.val(youtube_parser(link.val()));
             if (videoID.val() == "false") {
                 link.attr('style', 'border: 2px solid red;');
@@ -57,7 +59,7 @@
         })
 
         formAddVideo.submit(function(e) {
-            // console.log(videoID.val())
+            console.log(videoID.val())
             if (videoID.val() == "false") {
                 alert_link.attr('style', 'display: inline; color: red');
                 alert_link.fadeOut(3500);
