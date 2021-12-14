@@ -64,6 +64,7 @@
                             <div class="col-sm-8 pl-0">
                                 <h5 class="mb-1 text2line"><b>{{this.name}}</b></h5>
                                 <p class="mb-0 text2line mt">{{this.mieuta}}</p>
+                                <p class="mb-0 text2line mt id" style="display: none;">{{this._id}}</p>
                                 <small class="text-muted time">{{this.updatedAt}}</small>
                             </div>
                         </div>
@@ -195,19 +196,16 @@
         // lock course
         function checkUnlockCourse(i) {
             // console.log($(selectList[i]))
-            var link = $(selectList[i]).find("img").attr("src");
-            // console.log(link);
-            var videoID = link.substring(link.indexOf("vi/")+3, link.indexOf("vi/")+14)
-            // console.log(videoID);
+            var _id = $(selectList[i]).find(".mb-0.text2line.mt.id").text();
 
             $.ajax({
                 url: '/courses/checkUnlock',
                 type: 'POST',
                 data: {
-                    videoID: videoID,
+                    _id: _id,
                 }
             }).done(function(ketqua) {
-                // console.log(ketqua);
+                //console.log(ketqua);
                 // console.log($(selectList).length);
                 if (ketqua == "true") {
                     unlockVideo(i);
@@ -225,14 +223,13 @@
 
         // unlock first video
         function unlockVideoServer(i) {
-            var link = $(selectList[i]).find("img").attr("src");
-            var videoID = link.substring(link.indexOf("vi/")+3, link.indexOf("vi/")+14)
-            // console.log(videoID);
+            var _id = $(selectList[i]).find(".mb-0.text2line.mt.id").text();
+            // console.log(id);
             var a = $.ajax({
                 url: '/courses/unlockVideo',
                 type: 'POST',
                 data: {
-                    videoID: videoID,
+                    _id: _id,
                 }
             })
             $.when(a).done(function() {

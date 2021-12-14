@@ -355,18 +355,20 @@ class CourseController {
 
     // POST /checkUnlock <AJAX>
     checkUnlock(req, res, next) {
-        // res.send(req.body.videoID);
+        // console.log(req.body);
         Video.findOne(
             {
-                videoID: req.body.videoID,
+                _id: req.body._id,
                 unlock: req.session.passport.user._id,
             },
             function (err, doc) {
                 if (doc === null) {
                     res.send('false');
+                    console.log(doc);
                     return false; // this will return undefined to the controller
                 } else {
                     res.send('true');
+                    console.log(doc);
                     return true; // this will return undefined to the controller
                 }
             },
@@ -375,16 +377,16 @@ class CourseController {
 
     // POST /unlockFirstVideo <AJAX>
     unlockVideo(req, res, next) {
-        // res.send(req.body.videoID);
+        // console.log(req.body);
         Video.findOne(
             {
-                videoID: req.body.videoID,
+                _id: req.body._id,
                 unlock: req.session.passport.user._id,
             },
             function (err, doc) {
                 if (doc === null) {
                     Video.updateOne(
-                        { videoID: req.body.videoID },
+                        { _id: req.body._id },
                         { $push: { unlock: req.session.passport.user._id } },
                     )
                         .then((video) => {
