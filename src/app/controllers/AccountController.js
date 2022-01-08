@@ -170,6 +170,7 @@ class AccountController {
 
     // PUT /account/edit/:id
     async update(req, res, next) {
+        // console.log("aa");
         if (req.file) {
             req.body.image = '/img/user/' + req.file.filename;
             var path = './src/public' + req.session.passport.user.image;
@@ -184,7 +185,8 @@ class AccountController {
         await User.updateOne({ _id: req.params.id }, req.body)
             .then(async () => {
                 var user = await User.findById(req.params.id);
-                req.session.passport.user = user;
+                // if (req.session.passport.user._id == user._id)
+                //     req.session.passport.user = user;
                 res.redirect(req.body.url);
             })
             .catch(next);
@@ -218,7 +220,7 @@ class AccountController {
             null,
         );
         user.save();
-        req.session.passport.user = user;
+        // req.session.passport.user = user;
         res.redirect('/account/edit/' + user._id);
     }
 }

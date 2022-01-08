@@ -16,7 +16,7 @@ router.patch('/:id/restore', courseController.restore);
 router.delete('/:id', courseController.delete);
 router.delete('/:id/force', courseController.forceDelete);
 router.get('/show/:slug', courseController.show);
-router.post('/getNumUser', courseController.getNumUser);
+// router.post('/getNumUser', courseController.getNumUser);
 
 // AJAX show video
 router.post('/checkUnlock', courseController.checkUnlock);

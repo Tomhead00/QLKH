@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <!-- <script src="like_button.js"></script> -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <!-- <script>
+        const ul = React.createElement(
+            'ul',
+            null,
+            React.createElement('li', null, 'Javascript'),
+            React.createElement('li', null, 'ReactJS')
+        )
+
+        ReactDOM.render(ul, document.getElementById('root'));
+
+    </script> -->
+
+<script type="text/babel">
+    // const courses = [
+    //     {
+    //         name: "HTML, CSS"
+    //     },
+    //     {
+    //         name: "Responsive web design"
+    //     },
+    //     {
+    //         name: "ReactJS"
+    //     },
+    // ]
+
+    // const ul = <ul>
+    //     {courses.map((course, index) => <li key={index}>{course.name}</li>
+    //     )}
+    // </ul>
+// -------------------------
+    // function PostItem({
+    //     image,
+    //     title,
+    //     description,
+    //     publishedAt,
+    //     callback=() => {},
+    // }) {
+    //     callback()
+    //     return (
+    //         <div className="post-item">
+    //             <img src={image} alt={title}/>
+    //             <h2 className="post-title">{title}</h2>
+    //             <p className="post-desc">{description}</p>
+    //             <p className="post-published">{publishedAt}</p>    
+    //         </div>
+    //     )
+    // }
+    
+    // function App() {
+    //     return (
+    //         <div id="wapper">
+    //             <PostItem 
+    //                 title="Thời gian và Động lực"
+    //                 image="https://cdn.fullstack.edu.vn/f8-production/blog_posts/1671/61b6368a3a089.jpg"
+    //                 description="ABC"
+    //                 publishedAt="Có lẽ cũng rất lâu rồi mà tôi chưa đụng đến thứ được gọi là `timetable`. Hay dân dã hơn thì người ta hay gọi là `Lịch thường nhật`,..."
+    //                 callback={() => {}}
+    //             />
+    //             <PostItem 
+    //                 title="Thời gian và Động lực 234"
+    //                 image="https://cdn.fullstack.edu.vn/f8-production/blog_posts/1671/61b6368a3a089.jpg"
+    //                 description="ABC"
+    //                 publishedAt="Có lẽ cũng rất lâu rồi mà tôi chưa đụng đến thứ được gọi là `timetable`. Hay dân dã hơn thì người ta hay gọi là `Lịch thường nhật`,..."
+    //             />
+    //         </div>
+    //     )
+    // }
+// --------------
+    // const courses = 
+    // [
+    //     {
+    //     "id": 5,
+    //     "title": "HTML, CSS Tips & Tricks",
+    //     "slug": "html-css-tutorials",
+    //     "description": "Tutorials về HTML, CSS, UI, UX sẽ được tổng hợp tại khóa học này, các video có nội dung ngắn gọn, súc tích giúp học viên có thể ứng dụng ngay vào thực tế",
+    //     "image": "courses/5.png",
+    //     "content": null,
+    //     "video_type": "youtube",
+    //     "video": "nB6cJh_bb1U",
+    //     "priority": 40,
+    //     "students_count": 11708,
+    //     "old_price": 0,
+    //     "price": 0,
+    //     "is_pro": false,
+    //     "deleted_at": null,
+    //     "created_at": "2020-03-10T14:23:13.000000Z",
+    //     "updated_at": "2022-01-07T07:26:45.000000Z",
+    //     "image_url": "https://cdn.fullstack.edu.vn/f8-production/courses/5.png",
+    //     "video_url": "https://www.youtube.com/watch?v=nB6cJh_bb1U"
+    //     },
+    //     {
+    //     "id": 4,
+    //     "title": "App \"Đừng Chạm Tay Lên Mặt\"",
+    //     "slug": "tool-canh-bao-so-len-mat",
+    //     "description": "Xây dựng ứng dụng đưa ra cảnh báo khi người dùng sờ tay lên mặt. Chúng ta sẽ sử dụng thư viện ReactJS & Tensoflow để hoàn thiện ứng dụng này.",
+    //     "image": "courses/4/61a9e9e701506.png",
+    //     "content": null,
+    //     "video_type": "youtube",
+    //     "video": "r6GWbQL-qwA",
+    //     "priority": 50,
+    //     "students_count": 4168,
+    //     "old_price": 0,
+    //     "price": 0,
+    //     "is_pro": false,
+    //     "deleted_at": null,
+    //     "created_at": "2020-01-10T14:23:13.000000Z",
+    //     "updated_at": "2022-01-07T05:17:40.000000Z",
+    //     "image_url": "https://cdn.fullstack.edu.vn/f8-production/courses/4/61a9e9e701506.png",
+    //     "video_url": "https://www.youtube.com/watch?v=r6GWbQL-qwA"
+    //     },
+    //     {
+    //     "id": 14,
+    //     "title": "Làm việc với Terminal & Ubuntu",
+    //     "slug": "windows-terminal-wsl",
+    //     "description": "Sở hữu một Terminal hiện đại, mạnh mẽ trong tùy biến và học cách làm việc với Ubuntu là một bước quan trọng trên con đường trở thành một Web Developer.",
+    //     "image": "courses/14/61a89fb15f2fb.png",
+    //     "content": null,
+    //     "video_type": "youtube",
+    //     "video": "7ppRSaGT1uw",
+    //     "priority": 51,
+    //     "students_count": 907,
+    //     "old_price": 0,
+    //     "price": 0,
+    //     "is_pro": false,
+    //     "deleted_at": null,
+    //     "created_at": "2021-12-01T12:08:12.000000Z",
+    //     "updated_at": "2022-01-07T07:01:27.000000Z",
+    //     "image_url": "https://cdn.fullstack.edu.vn/f8-production/courses/14/61a89fb15f2fb.png",
+    //     "video_url": "https://www.youtube.com/watch?v=7ppRSaGT1uw"
+    //     }
+    // ]
+
+    // function CourseItem( {course, onClick} ) {
+    //     return (
+    //         <div className="post-item">
+    //             <img src={course.image_url} alt={course.title}/>
+    //             <h2 onClick={() => onClick(course)} className="post-title">{course.title}</h2>
+    //             <p className="post-desc">{course.description}</p>
+    //             <p className="post-published">{course.students_count}</p>
+    //         </div>
+    //     )
+    // }
+
+    // function App() {
+
+    //     const handleClick = (course) => {
+    //         console.log(course.title);
+    //     }
+
+    //     return (
+    //         <div id="wapper">
+    //             {courses.map((course) => {
+    //                 return (
+    //                     <CourseItem
+    //                         key = {course.id}
+    //                         course = {course}
+    //                         onClick = {handleClick}
+    //                     />
+    //                 )
+    //             })}
+    //         </div>
+    //     )
+    // }
+// -----------------
+    // function App() {
+    //     return (
+    //         <div id="wapper">
+    //             <button 
+    //                 onDoubleClick={(event) => console.log(event.target)}
+    //             >
+    //                     Click me!
+    //             </button>
+    //         </div>
+    //     )
+    // }
+// -----------------
+    // const Form = {
+    //     Input() {
+    //         return <input/>
+    //     },
+    //     Checkbox() {
+    //         return <input type="checkbox"/>
+    //     }
+    // }
+
+    // function Button ({title, href, onClick}) {
+    //     let Component = "a"
+    //     const props = {}
+
+    //     if (onClick) {
+    //         props.onClick = onClick
+    //     }
+    //     if (href) {
+    //         props.href = href
+    //     }
+    //     return (
+    //         <Component {...props}>{title}</Component>
+    //     )
+    // }
+
+    // function App() {
+
+    //     return (
+    //         <div id="wapper">
+    //             <Button
+    //                 title = "Click me!"
+    //                 href = "https://fullstack.edu.vn"
+    //                 onClick = {() => console.log(Math.random())}
+    //             />
+    //         </div>
+    //     )
+    // }
+// -----------------
+    // function App({title}) {
+
+    //     return (
+    //         <div id="wapper">
+    //             <h1>{title || "Hello"}</h1>
+    //         </div>
+    //     )
+    // }
+
+    // ReactDOM.render(<App />, document.getElementById('root'));
+// -----------------
+function App({title}) {
+
+    return (
+        <div id="wapper">
+            <h1>{title || "Hello"}</h1>
+        </div>
+    )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>

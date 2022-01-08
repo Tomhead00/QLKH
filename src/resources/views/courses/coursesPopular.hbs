@@ -23,7 +23,7 @@
                         <p><img src={{this.actor.image}} alt="" class="user-avatar"><b>{{this.actor.username}}</b></p>
                         <div class="card-footer d-flex">
                             <small class="text-muted time">{{this.updatedAt}}</small>
-                            <small class="text-muted ml-auto"><i class="fas fa-users"></i> N/A</small>
+                            <small class="text-muted ml-auto"><i class="fas fa-users"></i> {{this.studentCount}}</small>
                         </div>
                     </div>
                 </div>
@@ -47,32 +47,5 @@
         var time = $(".time").map(function() {
             $(this).text(moment($(this).text()).fromNow());
         }).get();
-
-        // get number join courses
-        $(function() {
-            $.each(card, function(index, value) {
-                // console.log(value);
-
-                var link = $(value).children("a").attr('href');
-                // console.log(link);
-                var slugCourse = link.substring(link.lastIndexOf("/")+1, link.length);
-                // console.log(slugCourse);
-
-                $.ajax({
-                    url: '/courses/getNumUser',
-                    type: 'POST',
-                    data: {
-                        slug: slugCourse
-                    }
-                }).done(function(ketqua) {
-                    // console.log(ketqua);
-                    var numUser = $(value).find(".text-muted.ml-auto").html("<i class='fas fa-users'></i> " +  ketqua);
-                    // console.log(numUser.text());
-                });
-            })
-        })
-        // refesh mieu ta /n
-        enterDes();
-
     })
 </script>

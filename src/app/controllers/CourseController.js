@@ -18,67 +18,160 @@ class CourseController {
         });
         // console.log(typeof(user.khoahoc))
         // console.log(user.khoahoc)
-
-        const courses = await Course.find({ _id: { $in: user.khoahoc } })
-            .populate({ modal: 'user', path: 'actor' })
-            .sort({ updatedAt: -1 })
-            .catch(next);
-
-        // Cac khoa hoc noi bat
-        var arr = [];
-        const trend = await Course.find({})
-            .populate({ modal: 'user', path: 'actor' })
-            .then(async (courses) => {
-                for (const course of courses) {
-                    const myCount = await User.where({
-                        khoahoc: course._id,
-                    }).countDocuments();
-                    arr.push({
-                        count: myCount,
-                        _id: course._id,
-                    });
-                }
-            })
-            .catch(next);
-        arr.sort(function (a, b) {
-            return b.count - a.count;
-        });
-        arr = arr.slice(0, 4);
-
-        let courseFA = await Promise.all(
-            arr.map(async (item) => {
-                // console.log(item._id);
-                let test = await Course.findOne({ _id: item._id })
-                    .populate({ modal: 'user', path: 'actor' })
-                    .catch(next);
-                return test;
-            }),
+        // const courses = await Course.find({ _id: { $in: user.khoahoc } })
+        //     .populate({ modal: 'user', path: 'actor' })
+        //     .sort({ updatedAt: -1 })
+        //     .catch(next);
+        const courses = await Course.aggregate([
+            {
+                $match: { _id: { $in: user.khoahoc } },
+            },
+            {
+                $lookup: {
+                    from: 'users', // collection to join
+                    localField: '_id', //field from the input documents
+                    foreignField: 'khoahoc', //field from the documents of the "from" collection
+                    as: 'student', // output array field
+                },
+            },
+            {
+                $addFields: { studentCount: { $size: '$student' } },
+            },
+            {
+                $sort: { updatedAt: -1 },
+            },
+        ]).catch(next);
+        await Course.populate(courses, { modal: 'user', path: 'actor' }).catch(
+            next,
         );
+        // console.log(courses);
+
+        // Cac khoa hoc pho bien
+        // var arr = [];
+        // const trend = await Course.find({})
+        //     .populate({ modal: 'user', path: 'actor' })
+        //     .then(async (courses) => {
+        //         for (const course of courses) {
+        //             const myCount = await User.where({
+        //                 khoahoc: course._id,
+        //             }).countDocuments();
+        //             arr.push({
+        //                 count: myCount,
+        //                 _id: course._id,
+        //             });
+        //         }
+        //     })
+        //     .catch(next);
+        // arr.sort(function (a, b) {
+        //     return b.count - a.count;
+        // });
+        // arr = arr.slice(0, 4);
+
+        // let courseFA = await Promise.all(
+        //     arr.map(async (item) => {
+        //         console.log(item._id);
+        //         let test = await Course.findOne({ _id: item._id })
+        //             .populate({ modal: 'user', path: 'actor' })
+        //             .catch(next);
+        //         return test;
+        //     }),
+        // );
+        const courseFA = await Course.aggregate([
+            {
+                $lookup: {
+                    from: 'users', // collection to join
+                    localField: '_id', //field from the input documents
+                    foreignField: 'khoahoc', //field from the documents of the "from" collection
+                    as: 'student', // output array field
+                },
+            },
+            {
+                $addFields: { studentCount: { $size: '$student' } },
+            },
+            {
+                $sort: { studentCount: -1 },
+            },
+            {
+                $limit: 4,
+            },
+        ]).catch(next);
+        await Course.populate(courseFA, { modal: 'user', path: 'actor' }).catch(
+            next,
+        );
+        // console.log(courseFA);
 
         // Cac khoa vua cap nhat
-        const coursesNew = await Course.find({})
-            .populate({ modal: 'user', path: 'actor' })
-            .populate('video')
-            .sort({ updatedAt: -1 })
-            .limit(4);
+        // const coursesNew = await Course.find({})
+        //     .populate({ modal: 'user', path: 'actor' })
+        //     .populate('video')
+        //     .sort({ updatedAt: -1 })
+        //     .limit(4);
+        const coursesNew = await Course.aggregate([
+            {
+                $lookup: {
+                    from: 'users', // collection to join
+                    localField: '_id', //field from the input documents
+                    foreignField: 'khoahoc', //field from the documents of the "from" collection
+                    as: 'student', // output array field
+                },
+            },
+            {
+                $addFields: { studentCount: { $size: '$student' } },
+            },
+            {
+                $sort: { updatedAt: -1 },
+            },
+            {
+                $limit: 4,
+            },
+        ]).catch(next);
+        await Course.populate(coursesNew, {
+            modal: 'user',
+            path: 'actor',
+        }).catch(next);
 
         // Cac khoa vua khac
-        const coursesAnother = await Course.find({
-            _id: { $nin: user.khoahoc },
-        })
-            .populate({ modal: 'user', path: 'actor' })
-            .populate('video')
-            .sort({ updatedAt: -1 })
-            .catch(next);
-        // res.json(course);
-        // res.json(courses1);
-        // res.json(courseFA);
+        // const coursesAnother = await Course.find({
+        //     _id: { $nin: user.khoahoc },
+        // })
+        //     .populate({ modal: 'user', path: 'actor' })
+        //     .populate('video')
+        //     .sort({ updatedAt: -1 })
+        //     .catch(next);
+        const coursesAnother = await Course.aggregate([
+            {
+                $match: { _id: { $nin: user.khoahoc } },
+            },
+            {
+                $lookup: {
+                    from: 'users', // collection to join
+                    localField: '_id', //field from the input documents
+                    foreignField: 'khoahoc', //field from the documents of the "from" collection
+                    as: 'student', // output array field
+                },
+            },
+            {
+                $addFields: { studentCount: { $size: '$student' } },
+            },
+            {
+                $sort: { updatedAt: -1 },
+            },
+        ]).catch(next);
+        await Course.populate(coursesAnother, {
+            modal: 'user',
+            path: 'actor',
+        }).catch(next);
+
         res.render('courses/courses', {
             title: 'Khóa học',
-            courses: multipleMongooseToObject(courses),
-            coursesNew: multipleMongooseToObject(coursesNew),
-            courseFA: multipleMongooseToObject(courseFA),
-            coursesAnother: multipleMongooseToObject(coursesAnother),
+            // courses: multipleMongooseToObject(courses),
+            // coursesNew: multipleMongooseToObject(coursesNew),
+            // courseFA: multipleMongooseToObject(courseFA),
+            // coursesAnother: multipleMongooseToObject(coursesAnother),
+            courses,
+            coursesNew,
+            courseFA,
+            coursesAnother,
             username: req.session.passport,
         });
     }
@@ -87,54 +180,59 @@ class CourseController {
     // GET /course/courseNew
     async courseNew(req, res, next) {
         // Cac khoa vua cap nhat
-        const coursesNew = await Course.find({})
-            .populate({ modal: 'user', path: 'actor' })
-            .populate('video')
-            .sort({ updatedAt: -1 })
-            .catch(next);
+        const coursesNew = await Course.aggregate([
+            {
+                $lookup: {
+                    from: 'users', // collection to join
+                    localField: '_id', //field from the input documents
+                    foreignField: 'khoahoc', //field from the documents of the "from" collection
+                    as: 'student', // output array field
+                },
+            },
+            {
+                $addFields: { studentCount: { $size: '$student' } },
+            },
+            {
+                $sort: { updatedAt: -1 },
+            },
+        ]).catch(next);
+        await Course.populate(coursesNew, {
+            modal: 'user',
+            path: 'actor',
+        }).catch(next);
 
         res.render('courses/coursesNew', {
             title: 'Khóa học vừa cập nhật',
-            coursesNew: multipleMongooseToObject(coursesNew),
+            coursesNew,
             username: req.session.passport,
         });
     }
 
     // GET /course/coursePopular
     async coursePopular(req, res, next) {
-        var arr = [];
-        const trend = await Course.find({})
-            .populate({ modal: 'user', path: 'actor' })
-            .then(async (courses) => {
-                for (const course of courses) {
-                    const myCount = await User.where({
-                        khoahoc: course._id,
-                    }).countDocuments();
-                    arr.push({
-                        count: myCount,
-                        _id: course._id,
-                    });
-                }
-            })
-            .catch(next);
-        arr.sort(function (a, b) {
-            return b.count - a.count;
-        });
-        // arr = arr.slice(0, 4);
-
-        let courseFA = await Promise.all(
-            arr.map(async (item) => {
-                // console.log(item._id);
-                let test = await Course.findOne({ _id: item._id })
-                    .populate({ modal: 'user', path: 'actor' })
-                    .catch(next);
-                return test;
-            }),
+        const courseFA = await Course.aggregate([
+            {
+                $lookup: {
+                    from: 'users', // collection to join
+                    localField: '_id', //field from the input documents
+                    foreignField: 'khoahoc', //field from the documents of the "from" collection
+                    as: 'student', // output array field
+                },
+            },
+            {
+                $addFields: { studentCount: { $size: '$student' } },
+            },
+            {
+                $sort: { studentCount: -1 },
+            },
+        ]).catch(next);
+        await Course.populate(courseFA, { modal: 'user', path: 'actor' }).catch(
+            next,
         );
 
         res.render('courses/coursesPopular', {
             title: 'Khóa học phổ biến',
-            courseFA: multipleMongooseToObject(courseFA),
+            courseFA,
             username: req.session.passport,
         });
     }
@@ -340,18 +438,18 @@ class CourseController {
             .catch(next);
     }
 
-    // POST /courses/getNumUser <AJAX>
-    getNumUser(req, res, next) {
-        // console.log(req.body);
-        Course.findOne(req.body)
-            .then((course) => {
-                // console.log(course._id)
-                User.countDocuments({ khoahoc: course }).then((count) => {
-                    res.send(count.toString());
-                });
-            })
-            .catch(next);
-    }
+    // // POST /courses/getNumUser <AJAX>
+    // getNumUser(req, res, next) {
+    //     // console.log(req.body);
+    //     Course.findOne(req.body)
+    //         .then((course) => {
+    //             // console.log(course._id)
+    //             User.countDocuments({ khoahoc: course }).then((count) => {
+    //                 res.send(count.toString());
+    //             });
+    //         })
+    //         .catch(next);
+    // }
 
     // POST /checkUnlock <AJAX>
     checkUnlock(req, res, next) {
@@ -364,11 +462,11 @@ class CourseController {
             function (err, doc) {
                 if (doc === null) {
                     res.send('false');
-                    console.log(doc);
+                    // console.log(doc);
                     return false; // this will return undefined to the controller
                 } else {
                     res.send('true');
-                    console.log(doc);
+                    // console.log(doc);
                     return true; // this will return undefined to the controller
                 }
             },
